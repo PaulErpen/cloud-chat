@@ -18,7 +18,6 @@ app.get('/login', function(req, res){
     users.push(username);
     res.sendFile(__dirname + '/chat.html');
   }
-  debugger;
 });
 
 io.on('connection', function(socket){
