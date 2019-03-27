@@ -13,7 +13,7 @@ app.get('/', function(req, res){
 app.get('/login', function(req, res){
   var username = req.query.username;
   if(users.includes(username)) {
-    res.sendFile(__dirname + '/index.html?failed');
+    res.sendFile(__dirname + '/index.html');
   } else {
     users.push(username);
     res.sendFile(__dirname + '/chat.html');
