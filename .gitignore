@@ -3,3 +3,6 @@ node
 package-lock.json
 .vscode
 packages-microsoft-prod.deb
+.idea
+client/.idea
+server/.idea

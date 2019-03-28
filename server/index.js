@@ -24,6 +24,8 @@ global.users = new Array();
 app.use('/', router);
 
 io.on('connection', function(socket){
+  console.log("user is connected");
+
   socket.on('chat message', function(msg){
     // io.emit('chat message', msg);
 
