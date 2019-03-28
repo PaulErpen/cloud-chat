@@ -5,17 +5,17 @@ import {Routes, Route, RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
 import { ChatService } from './chat/services/chat.service';
-import { RegistrationComponent } from './registration/registration.component';
 import { ChatComponent } from './chat/chat.component';
+import { AuthenticationComponent } from './authentication/authentication.component';
 
 const routes : Routes = [
   {path: '', component:ChatComponent},
-  {path: 'registration', component:RegistrationComponent}
+  {path: 'auth', component:AuthenticationComponent}
 ]
 @NgModule({
   declarations: [
     AppComponent,
-    RegistrationComponent,
+    AuthenticationComponent,
     ChatComponent
   ],
   imports: [
