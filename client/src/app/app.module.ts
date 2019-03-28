@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import {Routes, Route, RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
-import { ChatService } from './chat.service';
+import { ChatService } from './chat/services/chat.service';
 import { RegistrationComponent } from './registration/registration.component';
 import { ChatComponent } from './chat/chat.component';
 
