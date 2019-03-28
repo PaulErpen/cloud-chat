@@ -25,7 +25,18 @@ app.use('/', router);
 
 io.on('connection', function(socket){
   socket.on('chat message', function(msg){
-    io.emit('chat message', msg);
+    // io.emit('chat message', msg);
+
+    var username = 'USERNAME';
+    var currentdate = new Date();
+    var timestamp = "Last Sync: "
+        + currentdate.getDate() + "/"
+        + (currentdate.getMonth()+1)  + "/" // starts with 0
+        + currentdate.getFullYear() + " @ "
+        + currentdate.getHours() + ":"
+        + currentdate.getMinutes() + ":"
+        + currentdate.getSeconds();
+    io.emit('new_message', msg, timestamp, username);
   });
 });
 
