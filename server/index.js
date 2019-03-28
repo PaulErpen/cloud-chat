@@ -3,7 +3,6 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var port = process.env.PORT || 3000;
-var router = require('./routes/router.js');
 var path = require('path');
 const bodyParser = require("body-parser");
 
@@ -21,13 +20,11 @@ app.use(bodyParser.json());
 global.main_dir = __dirname;
 global.users = new Array();
 
-app.use('/', router);
-
 io.on('connection', function(socket){
   console.log("user is connected");
 
   socket.on('chat message', function(msg){
-    // io.emit('chat message', msg);
+    console.log(msg);
 
     var username = 'USERNAME';
     var currentdate = new Date();
@@ -38,7 +35,7 @@ io.on('connection', function(socket){
         + currentdate.getHours() + ":"
         + currentdate.getMinutes() + ":"
         + currentdate.getSeconds();
-    io.emit('new_message', msg, timestamp, username);
+    io.emit('new-message', {"payload":msg, "timestamp":timestamp, "username":username});
   });
 });
 
