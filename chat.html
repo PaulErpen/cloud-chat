@@ -26,6 +26,10 @@
               $('#messages').append($('<li>').text(msg));
               window.scrollTo(0, document.body.scrollHeight);
             });
+            socket.on('new_message', function(msg, timestamp, username){
+                $('#messages').append($('<li>').text(username + ': ' + msg + timestamp));
+                window.scrollTo(0, document.body.scrollHeight);
+              });
           });
         </script>
     </div>
