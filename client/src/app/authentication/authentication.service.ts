@@ -19,7 +19,7 @@ export class AuthenticationService {
     }
 
     login(username: string, password: string) {
-        return false;
+      this.http.post('http://localhost:3000'+'/login', {"username":username, "password":password});
     }
 
     logout() {
