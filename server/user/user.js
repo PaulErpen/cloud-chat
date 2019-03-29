@@ -2,7 +2,11 @@ const express = require('express');
 
 function login (username, password) {
     var user = users.filter(u => u.username == username && u.password == password);
-    return user.length > 0;
+    if(user.length > 0) {
+        return {"username" : username, "password" : password};
+    } else {
+        return false;
+    }
 }
 
 function register (username, password) {
@@ -11,7 +15,7 @@ function register (username, password) {
         return false;
     } else {
         users.push({"username" : username, "password" : password});
-        return true;
+        return {"username" : username, "password" : password};
     }
 }
 

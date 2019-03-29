@@ -17,9 +17,24 @@ export class AuthenticationService {
     public get currentUserValue(): User {
         return this.currentUserSubject.value;
     }
-
+    
     login(username: string, password: string) {
-      this.http.post('http://localhost:3000'+'/login', {"username":username, "password":password});
+      return this.http.post('http://localhost:3000'+'/login', 
+      {"username":username, "password":password}).toPromise();
+    }
+
+    register(username: string, password: string) {
+        return this.http.post('http://localhost:3000'+'/register', 
+        {"username":username, "password":password}).toPromise()
+        .then(
+            (res) => this.validateLogin(res)
+        );
+    }
+
+    validateLogin(res) {
+        if(res) {
+            debugger;
+        }
     }
 
     logout() {
