@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ChatService } from './services/chat.service';
+import {User} from "../_models/user";
+import * as io from 'socket.io-client';
+import {forEach} from "@angular/router/src/utils/collection";
 
 @Component({
   selector: 'app-chat',
@@ -9,6 +12,7 @@ import { ChatService } from './services/chat.service';
 export class ChatComponent implements OnInit {
   message: string;  
   messages: string[] = [];
+  online_user = 0;
 
   constructor(private chatService: ChatService) { }
 
@@ -25,5 +29,11 @@ export class ChatComponent implements OnInit {
       .subscribe((message: string) => {
         this.messages.push(message);
       });
+
+    this.chatService
+      .getUser()
+      .subscribe((users: number) => {
+        this.online_user = users;
+    })
   }
 }

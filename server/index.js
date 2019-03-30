@@ -31,9 +31,14 @@ app.use('/', router);
 //define global variables
 global.main_dir = __dirname;
 global.users = new Array();
+// global.online_user = 0;
+let online_user = new Array();
 
 io.on('connection', function(socket){
   console.log("user is connected");
+
+  online_user++;
+  io.emit('online users', online_user);
 
   socket.on('chat servermessage', function(data) {
     io.emit('new-message',{"payload":data, "type":"server"});
@@ -52,6 +57,10 @@ io.on('connection', function(socket){
         + currentdate.getSeconds();
     io.emit('new-message', {"payload":msg, "timestamp":timestamp, "username":username, "type":"user"});
   });
+  
+  socket.on('disconnect', function () {
+    console.log("user disconnected");
+  })
 });
 
 http.listen(port, function(){
