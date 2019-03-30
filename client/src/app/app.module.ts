@@ -10,6 +10,7 @@ import { ChatComponent } from './chat/chat.component';
 import { LoginComponent } from './authentication/components/login/login.component';
 import { RegistrationComponent } from './authentication/components/registration/registration.component';
 import { AuthGuard } from './_guards/auth.guard';
+import { MastheadComponent } from './masthead/masthead.component';
 
 const routes : Routes = [
   {path: '', component:ChatComponent, canActivate: [AuthGuard]},
@@ -21,7 +22,8 @@ const routes : Routes = [
     AppComponent,
     ChatComponent,
     LoginComponent,
-    RegistrationComponent
+    RegistrationComponent,
+    MastheadComponent
   ],
   imports: [
     BrowserModule,

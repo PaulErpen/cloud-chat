@@ -28,7 +28,7 @@ export class LoginComponent implements OnInit {
     if(res != false) {
       this.router.navigate(["/"]);
     } else {
-      this.error = "Registration failed!";
+      this.error = "Login failed!";
     }
   }
 
