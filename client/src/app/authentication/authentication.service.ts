@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { User } from '../_models/user';
+import { resolve } from 'path';
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
@@ -24,17 +25,22 @@ export class AuthenticationService {
     }
 
     register(username: string, password: string) {
+        var data = JSON.stringify({'username':username, 'password':password});
+        var headers = {headers: {'Content-Type': 'application/json'}};
         return this.http.post('http://localhost:3000'+'/register', 
-        {"username":username, "password":password}).toPromise()
+        data,
+        headers).toPromise()
         .then(
             (res) => this.validateLogin(res)
         );
     }
 
     validateLogin(res) {
-        if(res) {
-            debugger;
+        if(res != false) {
+            localStorage.setItem('currentUser', JSON.stringify(res));
+            this.currentUserSubject.next(res);
         }
+        return res;
     }
 
     logout() {

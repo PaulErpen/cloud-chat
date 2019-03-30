@@ -22,9 +22,9 @@ export class RegistrationComponent implements OnInit {
       (res) => this.registerRedirect(res)
     );
   }
-  
+
   registerRedirect(res) {
-    if(res) {
+    if(res != false) {
       this.router.navigate(["/"]);
     } else {
       this.error = "Registration failed!";

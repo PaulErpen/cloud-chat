@@ -11,7 +11,11 @@ var bodyParser = require('body-parser');
 app.use(express.static(path.join(__dirname, 'public')));
 
 //Body parser for POST requests
-app.use(bodyParser);
+app.use(bodyParser.urlencoded({
+  extended: false
+}));
+// parse application/json
+app.use(bodyParser.json())
 
 app.use(function (req, res, next) {
 
@@ -34,8 +38,6 @@ app.use(function (req, res, next) {
 
 //importing a router
 app.use('/', router);
-
-app.use(bodyParser.json());
 
 //define global variables
 global.main_dir = __dirname;
