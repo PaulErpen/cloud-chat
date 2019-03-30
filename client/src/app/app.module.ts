@@ -10,12 +10,8 @@ import { ChatComponent } from './chat/chat.component';
 import { LoginComponent } from './authentication/components/login/login.component';
 import { RegistrationComponent } from './authentication/components/registration/registration.component';
 import { AuthGuard } from './_guards/auth.guard';
+import { AppRoutingModule } from './app-routing.module';
 
-const routes : Routes = [
-  {path: '', component:ChatComponent, canActivate: [AuthGuard]},
-  {path: 'login', component:LoginComponent},
-  {path: 'registration', component:RegistrationComponent}
-]
 @NgModule({
   declarations: [
     AppComponent,
@@ -26,8 +22,8 @@ const routes : Routes = [
   imports: [
     BrowserModule,
     FormsModule,
-    RouterModule.forRoot(routes),
-    HttpClientModule
+    HttpClientModule,
+    AppRoutingModule
     ],
   providers: [ChatService],
   bootstrap: [AppComponent]
