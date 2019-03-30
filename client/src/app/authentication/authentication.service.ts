@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { ChatService } from '../chat/services/chat.service';
 
 import { User } from '../_models/user';
 
@@ -9,7 +10,7 @@ export class AuthenticationService {
     private currentUserSubject: BehaviorSubject<User>;
     public currentUser: Observable<User>;
 
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient, private chatService: ChatService) {
         this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
         this.currentUser = this.currentUserSubject.asObservable();
     }
@@ -50,6 +51,8 @@ export class AuthenticationService {
     logout() {
         // remove user from local storage to log user out
         localStorage.removeItem('currentUser');
+        this.chatService.sendLogoutMessage(this.currentUserValue);
         this.currentUserSubject.next(null);
+        window.location.reload();
     }
 }

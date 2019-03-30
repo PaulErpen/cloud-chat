@@ -21,6 +21,18 @@ export class ChatService {
         this.socket.emit('chat message', messageData);
     }
 
+    public sendLoginMessage() {
+        var messageData = JSON.parse(localStorage.getItem("currentUser")).username +
+            " entered the chatroom.";
+        this.socket.emit('chat servermessage', messageData);
+    }
+
+    public sendLogoutMessage(user) {
+        var messageData = user.username +
+            " exited the chatroom.";
+        this.socket.emit('chat servermessage', messageData);
+    }
+
     public getMessages = () => {
         return Observable.create((observer) => {
             this.socket.on('new-message', (message) => {

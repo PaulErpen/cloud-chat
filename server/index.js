@@ -35,6 +35,10 @@ global.users = new Array();
 io.on('connection', function(socket){
   console.log("user is connected");
 
+  socket.on('chat servermessage', function(data) {
+    io.emit('new-message',{"payload":data, "type":"server"});
+  });
+
   socket.on('chat message', function(data){
     var msg = data.message;
     var username = data.username;
@@ -46,7 +50,7 @@ io.on('connection', function(socket){
         + currentdate.getHours() + ":"
         + currentdate.getMinutes() + ":"
         + currentdate.getSeconds();
-    io.emit('new-message', {"payload":msg, "timestamp":timestamp, "username":username});
+    io.emit('new-message', {"payload":msg, "timestamp":timestamp, "username":username, "type":"user"});
   });
 });
 
