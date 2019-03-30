@@ -14,7 +14,11 @@ export class ChatService {
     }
 
     public sendMessage(message) {
-        this.socket.emit('chat message', message);
+        var messageData = {
+            "message": message,
+            "username": JSON.parse(localStorage.getItem("currentUser")).username
+        };
+        this.socket.emit('chat message', messageData);
     }
 
     public getMessages = () => {

@@ -1,5 +1,7 @@
 <div *ngFor="let message of messages">
-    {{message.username}}{{message.payload}}{{message.timestamp}}
+    <span>{{message.username}}</span>
+    <span>{{message.payload}}</span>
+    <span>{{message.timestamp}}</span>
 </div>
 
 <input [(ngModel)]="message" (keyup)="$event.keyCode == 13 && sendMessage()" />
