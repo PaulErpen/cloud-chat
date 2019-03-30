@@ -3,8 +3,8 @@ const router = express.Router();
 const user = require('../user/user');
 
 router.post('/login', function(req, res){
-  if((req.body.username != undefined && 
-  req.body.password != undefined)) {
+  if((req.body.username == undefined && 
+  req.body.password == undefined)) {
       res.send(false);
   } else {
     new Promise(function(resolve, reject) {

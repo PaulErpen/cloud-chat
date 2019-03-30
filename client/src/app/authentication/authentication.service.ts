@@ -20,19 +20,24 @@ export class AuthenticationService {
     }
     
     login(username: string, password: string) {
-      return this.http.post('http://localhost:3000'+'/login', 
-      {"username":username, "password":password}).toPromise();
+        var data = JSON.stringify({'username':username, 'password':password});
+        var headers = {headers: {'Content-Type': 'application/json'}};
+        return this.http.post('http://localhost:3000'+'/login', 
+            data, headers).toPromise()
+            .then(
+                (res) => this.validateLogin(res)
+            );
     }
 
     register(username: string, password: string) {
         var data = JSON.stringify({'username':username, 'password':password});
         var headers = {headers: {'Content-Type': 'application/json'}};
         return this.http.post('http://localhost:3000'+'/register', 
-        data,
-        headers).toPromise()
-        .then(
-            (res) => this.validateLogin(res)
-        );
+            data,
+            headers).toPromise()
+            .then(
+                (res) => this.validateLogin(res)
+            );
     }
 
     validateLogin(res) {

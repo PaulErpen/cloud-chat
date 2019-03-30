@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {AuthenticationService} from '../../authentication.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -9,14 +10,26 @@ import {AuthenticationService} from '../../authentication.service';
 export class LoginComponent implements OnInit {
   username: string;
   password: string;
+  error: string;
 
-  constructor(private auth: AuthenticationService) { }
+  constructor(private auth: AuthenticationService, private router: Router) { }
 
   ngOnInit() {
   }
 
   login() {
-    this.auth.login(this.username, this.password);
+    this.auth.login(this.username, this.password)
+      .then(
+        (res) => this.loginRedirect(res)
+      );
+  }
+
+  loginRedirect(res) {
+    if(res != false) {
+      this.router.navigate(["/"]);
+    } else {
+      this.error = "Registration failed!";
+    }
   }
 
 }

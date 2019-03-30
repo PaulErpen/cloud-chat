@@ -10,6 +10,7 @@ import {Router} from '@angular/router';
 export class RegistrationComponent implements OnInit {
   username: string;
   password: string;
+  password_repeat: string;
   error: string;
 
   constructor(private auth: AuthenticationService, private router : Router) { }
@@ -18,9 +19,13 @@ export class RegistrationComponent implements OnInit {
   }
 
   register() {
-    this.auth.register(this.username, this.password).then(
-      (res) => this.registerRedirect(res)
-    );
+    if(this.password == this.password_repeat) {
+      this.auth.register(this.username, this.password).then(
+        (res) => this.registerRedirect(res)
+      );
+    } else {
+      this.error = "Passwords have to match!";
+    }
   }
 
   registerRedirect(res) {
