@@ -24,7 +24,7 @@ export class MastheadComponent implements OnInit {
   }
 
   logout() {
-    this.auth.logout();
+    this.auth.logout(this.user.username);
   }
 
   updateUser(userValue) {

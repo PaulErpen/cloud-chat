@@ -17,6 +17,20 @@ router.post('/login', function(req, res){
   } 
 });
 
+router.post('/logout', function(req, res){
+    if((req.body.username == undefined)) {
+        res.send(false);
+    } else {
+        new Promise(function(resolve, reject) {
+            resolve(user.logout(req.body.username));
+        }).then(
+            function(result) {
+                res.send(result);
+            }
+        );
+    }
+});
+
 router.post('/register', function(req, res){
   if((req.body.username == undefined && 
   req.body.password == undefined)) {

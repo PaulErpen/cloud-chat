@@ -48,11 +48,21 @@ export class AuthenticationService {
         return res;
     }
 
-    logout() {
+    logout(username: string) {
         // remove user from local storage to log user out
         localStorage.removeItem('currentUser');
         this.chatService.sendLogoutMessage(this.currentUserValue);
         this.currentUserSubject.next(null);
+
+        // remove user from online list
+        var data = JSON.stringify({'username':username});
+        var headers = {headers: {'Content-Type': 'application/json'}};
+        return this.http.post('http://localhost:3000'+'/logout',
+          data, headers).toPromise()
+          .then(
+            (res) => this.validateLogin(res)
+          );
+
         window.location.reload();
     }
 }

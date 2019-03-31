@@ -1,7 +1,7 @@
 var express = require('express'); 
 var app = express();
 var http = require('http').Server(app);
-var io = require('socket.io')(http);
+global.io = require('socket.io')(http);
 var port = process.env.PORT || 3000;
 var path = require('path');
 var router = require('./routes/router.js');
@@ -31,14 +31,11 @@ app.use('/', router);
 //define global variables
 global.main_dir = __dirname;
 global.users = new Array();
-// global.online_user = 0;
 global.online_user = new Array();
 
 io.on('connection', function(socket){
   console.log("user is connected");
 
-  online_user = [{"username":"Hallo"}, {"username":"Test1"}];
-  online_user.push({"username":"Test2"});
   io.emit('online users', online_user);
 
   socket.on('chat servermessage', function(data) {
