@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { User } from '../../_models/user';
+import { OnlineUser } from '../../_models/online_user';
 import { UserListService } from './services/user-list.service';
 
 
@@ -9,7 +9,7 @@ import { UserListService } from './services/user-list.service';
   styleUrls: ['./user-list.component.less']
 })
 export class UserListComponent implements OnInit {
-  users: object[] = [];
+  users: OnlineUser[] = [];
 
   constructor(private userlistservice: UserListService) {
   }
@@ -21,7 +21,27 @@ export class UserListComponent implements OnInit {
   }
 
   setUserList(users) {
-    this.users = users;
+    var newUsers: OnlineUser[] = [];
+    
+    for (let user of users) {
+      var isSelected = false;
+
+      for (let oldUser of this.users) {
+        if(oldUser.username == user) isSelected = oldUser.isSelected;
+      }
+
+      newUsers.push({"username": user, "isSelected": isSelected});
+    }
+
+    this.users = newUsers;
+  }
+
+  clickUser($event) {
+    var username = $event.currentTarget.dataset.username;
+
+    for(let user of this.users) {
+      if(user.username == username) user.isSelected = !user.isSelected;
+    }
   }
 
 }
