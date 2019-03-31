@@ -32,12 +32,13 @@ app.use('/', router);
 global.main_dir = __dirname;
 global.users = new Array();
 // global.online_user = 0;
-let online_user = new Array();
+global.online_user = new Array();
 
 io.on('connection', function(socket){
   console.log("user is connected");
 
-  online_user++;
+  online_user = [{"username":"Hallo"}, {"username":"Test1"}];
+  online_user.push({"username":"Test2"});
   io.emit('online users', online_user);
 
   socket.on('chat servermessage', function(data) {

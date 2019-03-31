@@ -8,4 +8,6 @@
 <input [(ngModel)]="message" (keyup)="$event.keyCode == 13 && sendMessage()" />
 <button (click)="sendMessage()">Send</button>
 
-<span>Anzahl User: {{online_user}}</span>
+<div *ngFor="let user of online_user">
+  <span>User: {{user.username}}</span>
+</div>

@@ -4,8 +4,8 @@ function login (username, password) {
     var user = users.filter(u => u.username == username && u.password == password);
     if(user.length > 0) {
         online_user.adapter({"username" : username, "password" : password});
-        // online_user.add({"username" : username, "password" : password});
-        online_user++;
+        online_user.push({"username" : "ONLINEUSER"});
+        // online_user.push({"username":"Test3"});
         io.emit('online users', online_user);
         return {"username" : username, "password" : password};
     } else {
@@ -19,6 +19,7 @@ function register (username, password) {
         return false;
     } else {
         users.push({"username" : username, "password" : password});
+        io.emit('online users', online_user);
         return {"username" : username, "password" : password};
     }
 }

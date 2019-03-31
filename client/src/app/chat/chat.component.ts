@@ -12,7 +12,7 @@ import {forEach} from "@angular/router/src/utils/collection";
 export class ChatComponent implements OnInit {
   message: string;  
   messages: string[] = [];
-  online_user = 0;
+  online_user: string[] = [];
 
   constructor(private chatService: ChatService) { }
 
@@ -32,7 +32,7 @@ export class ChatComponent implements OnInit {
 
     this.chatService
       .getUser()
-      .subscribe((users: number) => {
+      .subscribe((users: string[]) => {
         this.online_user = users;
     })
   }
