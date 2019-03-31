@@ -36,10 +36,9 @@ global.online_user = new Array();
 io.on('connection', function(socket){
   console.log("user is connected");
 
-  io.emit('online users', online_user);
-
   socket.on('chat servermessage', function(data) {
     io.emit('new-message',{"payload":data, "type":"server"});
+    io.emit('online users', online_user); // new user connects or leaves
   });
 
   socket.on('chat message', function(data){
