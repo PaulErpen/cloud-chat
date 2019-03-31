@@ -12,7 +12,6 @@ import {forEach} from "@angular/router/src/utils/collection";
 export class ChatComponent implements OnInit {
   message: string;  
   messages: string[] = [];
-  online_user: string[] = [];
 
   constructor(private chatService: ChatService) { }
 
@@ -29,11 +28,5 @@ export class ChatComponent implements OnInit {
       .subscribe((message: string) => {
         this.messages.push(message);
       });
-
-    this.chatService
-      .getUser()
-      .subscribe((users: string[]) => {
-        this.online_user = users;
-    })
   }
 }

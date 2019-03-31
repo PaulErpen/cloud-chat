@@ -12,6 +12,7 @@ import { RegistrationComponent } from './authentication/components/registration/
 import { AuthGuard } from './_guards/auth.guard';
 import { MastheadComponent } from './masthead/masthead.component';
 import { AppRoutingModule } from './app-routing.module';
+import { OnlinelistComponent } from './chat/components/onlinelist/onlinelist.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { AppRoutingModule } from './app-routing.module';
     ChatComponent,
     LoginComponent,
     RegistrationComponent,
-    MastheadComponent
+    MastheadComponent,
+    OnlinelistComponent
   ],
   imports: [
     BrowserModule,
