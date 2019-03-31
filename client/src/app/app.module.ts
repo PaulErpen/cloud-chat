@@ -6,12 +6,14 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { ChatService } from './chat/services/chat.service';
+import { UserListService } from './chat/user-list/services/user-list.service';
 import { ChatComponent } from './chat/chat.component';
 import { LoginComponent } from './authentication/components/login/login.component';
 import { RegistrationComponent } from './authentication/components/registration/registration.component';
 import { AuthGuard } from './_guards/auth.guard';
 import { MastheadComponent } from './masthead/masthead.component';
 import { AppRoutingModule } from './app-routing.module';
+import { UserListComponent } from './chat/user-list/user-list.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +21,8 @@ import { AppRoutingModule } from './app-routing.module';
     ChatComponent,
     LoginComponent,
     RegistrationComponent,
-    MastheadComponent
+    MastheadComponent,
+    UserListComponent
   ],
   imports: [
     BrowserModule,

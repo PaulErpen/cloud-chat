@@ -31,12 +31,28 @@ app.use('/', router);
 //define global variables
 global.main_dir = __dirname;
 global.users = new Array();
+global.online_user_names = [];
+global.online_user_sockets = new Array();
 
 io.on('connection', function(socket){
-  console.log("user is connected");
+  socket.on('chat login', function(data) {
+    if(!online_user_names.includes(data.username)) {
+      online_user_names.push(data.username);
+    }
+    online_user_sockets[data.username] = {"socket": socket, "username": data.username};
 
-  socket.on('chat servermessage', function(data) {
-    io.emit('new-message',{"payload":data, "type":"server"});
+    io.emit('user update', {"users": online_user_names});
+    io.emit('new-message',{"payload":data.message, "type":"server"});
+  });
+
+  socket.on('chat logout', function(data) {
+    online_user_names.push(data.username);
+    online_user_names = online_user_names.filter(u => u != data.username);
+
+    online_user_sockets = online_user_sockets.filter(u => u != data.username);
+
+    io.emit('user update', {"users": online_user_names});
+    io.emit('new-message',{"payload":data.message, "type":"server"});
   });
 
   socket.on('chat message', function(data){

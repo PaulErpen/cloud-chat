@@ -22,15 +22,24 @@ export class ChatService {
     }
 
     public sendLoginMessage() {
-        var messageData = JSON.parse(localStorage.getItem("currentUser")).username +
-            " entered the chatroom.";
-        this.socket.emit('chat servermessage', messageData);
+        var username = JSON.parse(localStorage.getItem("currentUser")).username;
+        var messageData = {
+            "message": username +
+                " entered the chatroom.",
+            "username": username
+        };
+        
+        this.socket.emit('chat login', messageData);
     }
 
     public sendLogoutMessage(user) {
-        var messageData = user.username +
-            " exited the chatroom.";
-        this.socket.emit('chat servermessage', messageData);
+        var username = user.username;
+        var messageData = {
+            "message": username +
+                " entered the chatroom.",
+            "username": username
+        };
+        this.socket.emit('chat logout', messageData);
     }
 
     public getMessages = () => {
