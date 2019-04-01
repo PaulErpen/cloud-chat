@@ -42,7 +42,7 @@ io.on('connection', function(socket){
     online_user_sockets[data.username] = {"socket": socket, "username": data.username};
 
     io.emit('user update', {"users": online_user_names});
-    io.emit('new-message',{"payload":data.message, "type":"server"});
+    io.emit('new-message',{"payload": data.message, "type": "server"});
   });
 
   socket.on('chat logout', function(data) {
@@ -74,7 +74,6 @@ io.on('connection', function(socket){
 
   socket.on('chat message', function(data){
     var msg = data.message;
-    var username = data.username;
     var currentdate = new Date();
     var timestamp = currentdate.getDate() + "."
         + currentdate.getMonth() + " "
@@ -86,7 +85,7 @@ io.on('connection', function(socket){
       online_user_sockets[username].socket.emit('new message',
         {"payload":msg, 
         "timestamp":timestamp, 
-        "username":username, 
+        "username":data.username, 
         "type":"message",
         "users": data.selectedUsers
       });
