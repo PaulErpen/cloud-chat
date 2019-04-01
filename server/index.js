@@ -31,26 +31,65 @@ app.use('/', router);
 //define global variables
 global.main_dir = __dirname;
 global.users = new Array();
+global.online_user_names = [];
+global.online_user_sockets = new Array();
 
 io.on('connection', function(socket){
-  console.log("user is connected");
+  socket.on('chat login', function(data) {
+    if(!online_user_names.includes(data.username)) {
+      online_user_names.push(data.username);
+    }
+    online_user_sockets[data.username] = {"socket": socket, "username": data.username};
 
-  socket.on('chat servermessage', function(data) {
-    io.emit('new-message',{"payload":data, "type":"server"});
+    io.emit('user update', {"users": online_user_names});
+    io.emit('new-message',{"payload": data.message, "type": "server"});
+  });
+
+  socket.on('chat logout', function(data) {
+    online_user_names = online_user_names.filter(u => u != data.username);
+
+    online_user_sockets = Object.keys(online_user_sockets)
+      .filter(u => u != data.username)
+      .reduce((obj, key) => {
+        obj[key] = online_user_sockets[key];
+        return obj;
+      }, {}
+    );
+
+    io.emit('user update', {"users": online_user_names});
+    io.emit('new-message',{"payload":data.message, "type":"server"});
+  });
+
+  socket.on('chat broadcast', function(data){
+    var msg = data.message;
+    var username = data.username;
+    var currentdate = new Date();
+    var timestamp = currentdate.getDate() + "."
+        + currentdate.getMonth() + " "
+        + currentdate.getHours() + ":"
+        + currentdate.getMinutes() + ":"
+        + currentdate.getSeconds();
+    io.emit('new broadcast', {"payload":msg, "timestamp":timestamp, "username":username, "type":"broadcast"});
   });
 
   socket.on('chat message', function(data){
     var msg = data.message;
-    var username = data.username;
     var currentdate = new Date();
-    var timestamp = "Last Sync: "
-        + currentdate.getDate() + "/"
-        + (currentdate.getMonth()+1)  + "/" // starts with 0
-        + currentdate.getFullYear() + " @ "
+    var timestamp = currentdate.getDate() + "."
+        + currentdate.getMonth() + " "
         + currentdate.getHours() + ":"
         + currentdate.getMinutes() + ":"
         + currentdate.getSeconds();
-    io.emit('new-message', {"payload":msg, "timestamp":timestamp, "username":username, "type":"user"});
+    for(var i = 0; i < data.selectedUsers.length; i++) {
+      var username = data.selectedUsers[i];
+      online_user_sockets[username].socket.emit('new message',
+        {"payload":msg, 
+        "timestamp":timestamp, 
+        "username":data.username, 
+        "type":"message",
+        "users": data.selectedUsers
+      });
+    }
   });
 });
 

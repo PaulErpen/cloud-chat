@@ -1,6 +1,11 @@
 <app-masthead></app-masthead>
+<app-user-list></app-user-list>
 <div *ngFor="let message of messages">
     <span *ngIf="message.type != 'server';">{{message.username}}</span>
+    <span *ngIf="message.type == 'message';">
+        to 
+            <span *ngFor="let user of message.users">{{user}}</span>
+    </span>
     <span>{{message.payload}}</span>
     <span *ngIf="message.type != 'server';">{{message.timestamp}}</span>
 </div>

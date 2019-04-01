@@ -1,0 +1,8 @@
+<div class = "user-list">
+    <div class = "user-label" *ngFor="let user of users"
+        [attr.data-username] = "user.username"
+        (click)="clickUser($event)"
+        [ngClass]="{'selected' : user.isSelected}"
+        class = "user-label">{{user.username}}
+    </div>
+</div>
