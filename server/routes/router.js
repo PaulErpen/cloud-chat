@@ -3,10 +3,14 @@ const router = express.Router();
 const user = require('../user/user');
 
 var multer = require('multer');
-// set the directory for the uploads to the uploaded to
-var DIR = './public/files';
-//define the type of upload multer would be doing and pass in its destination, in our case, its a single file with the name photo
-var upload = multer({dest: DIR}).single('photo');
+
+var DIR = '../public/files';
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, main_dir+"/public/files")
+  }
+})
+var upload = multer({storage: storage}).single('photo');
 
 router.post('/login', function(req, res){
   if((req.body.username == undefined && 
@@ -44,11 +48,11 @@ router.post('/upload', function(req, res){
     if (err) {
       // An error occurred when uploading
       console.log(err);
-      return res.status(422).send("an Error occured")
-    }  
+      res.status(422).send("an Error occured")
+    }
    // No error occured.
     path = req.file.path;
-    return res.send("Upload Completed for "+path);
+    res.send("Upload Completed for "+path);
   });
 });
 

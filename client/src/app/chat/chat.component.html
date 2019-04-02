@@ -12,4 +12,13 @@
 
 <input [(ngModel)]="message" (keyup)="$event.keyCode == 13 && sendMessage()" />
 <button (click)="sendMessage()">Send</button>
-<input ng2FileSelect type="file" accept=".jpg" [uploader]="uploader"/>
+<input ng2FileSelect name = "photo" type="file" accept=".jpg" [uploader]="uploader"/>
+<button type="button" class="btn btn-success btn-s"
+      (click)="uploader.uploadAll()" 
+      [disabled]="!uploader.getNotUploadedItems().length">
+      Upload with ng-2 file uploader
+</button>
+<input id="photo" type="file" />
+<button type="button" class="btn btn-success btn-s" (click)="upload()">
+Upload with method 2
+</button>
