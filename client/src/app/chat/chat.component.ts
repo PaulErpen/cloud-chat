@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ChatService } from './services/chat.service';
 import  *  as $ from 'jquery';
+import { FileUploader } from 'ng2-file-upload';
 
 @Component({
   selector: 'app-chat',
@@ -11,6 +12,10 @@ export class ChatComponent implements OnInit {
   message: string;  
   messages: string[] = [];
   files: FileList;
+  uploader: FileUploader = new FileUploader({ url: "http://localhost:3000/upload",
+  itemAlias: 'photo',
+  removeAfterUpload: true, 
+  autoUpload: false });
 
   constructor(private chatService: ChatService) { }
 
