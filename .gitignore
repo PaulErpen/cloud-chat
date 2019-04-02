@@ -6,3 +6,4 @@ packages-microsoft-prod.deb
 .idea
 client/.idea
 server/.idea
+server/npm-debug\.log
