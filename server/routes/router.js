@@ -32,4 +32,8 @@ router.post('/register', function(req, res){
   }
 });
 
+router.post('/upload', function(req, res){
+  debugger;
+});
+
 module.exports = router;

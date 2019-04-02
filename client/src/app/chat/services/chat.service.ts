@@ -64,4 +64,31 @@ export class ChatService {
             });
         });
     }
+    public sendFiles (files: FileList) {
+        for(var i = 0; i < files.length; i++) {
+            this.sendFile(files[i]);
+        }
+    }
+    private sendFile(file: File) {
+        return new Promise((resolve, reject) => {
+
+            let xhr:XMLHttpRequest = new XMLHttpRequest();
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        resolve(JSON.parse(xhr.response));
+                    } else {
+                        reject(xhr.response);
+                    }
+                }
+            };
+    
+            xhr.open('POST', this.url+ "/upload", true);
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+
+            let formData = new FormData();
+            formData.append("file", file, file.name);
+            xhr.send(formData);
+        });
+    }
 }
