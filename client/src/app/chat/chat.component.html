@@ -12,4 +12,3 @@
 
 <input [(ngModel)]="message" (keyup)="$event.keyCode == 13 && sendMessage()" />
 <button (click)="sendMessage()">Send</button>
-<input id = "uploadfiles" type="file" (change)="onFileChange($event)" />

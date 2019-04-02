@@ -7,8 +7,8 @@ import { UserListService } from '../user-list/services/user-list.service';
   providedIn: 'root'
 })
 export class ChatService {
-    private url = 'http://localhost:3000';
-    private socket;
+  private url = 'http://localhost:3000';
+  private socket;
 
     constructor(private userlistservice: UserListService) {
         this.socket = io(this.url);
@@ -63,31 +63,5 @@ export class ChatService {
                 observer.next(message);
             });
         });
-    }
-
-    public sendFiles (files: FileList) {
-        for(var i = 0; i < files.length; i++) {
-            this.sendFile(files[i]);
-        }
-    }
-    private sendFile(file: File) {
-        var selectedUsers = this.userlistservice.getSelectedUsers();
-        if(selectedUsers.length > 0) {
-            var fileData = {
-                "username": JSON.parse(localStorage.getItem("currentUser")).username,
-                "selectedUsers": selectedUsers,
-                size: file.size
-            };
-            //this.socket.emit('file message', fileData);
-        } else {
-            var fileData = {
-                "username": JSON.parse(localStorage.getItem("currentUser")).username,
-                "selectedUsers": [],
-                size: file.size
-            };
-            var stream = ss.createStream();
-            // ss(this.socket).emit("file broadcast", stream, fileData);
-            // ss.createStream(file).pipe(stream);
-        }
     }
 }

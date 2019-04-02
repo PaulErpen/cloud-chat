@@ -6,7 +6,6 @@ var port = process.env.PORT || 3000;
 var path = require('path');
 var router = require('./routes/router.js');
 var bodyParser = require('body-parser');
-var ss = require('socket.io-stream');
 
 //joining paths in order to serve public files
 app.use(express.static(path.join(__dirname, 'public')));
@@ -91,11 +90,6 @@ io.on('connection', function(socket){
         "users": data.selectedUsers
       });
     }
-  });
-
-  ss(socket).on('file broadcast', function(stream, data) {
-    var filename = path.basename(data.name);
-    var file = stream.pipe(fs.createWriteStream(filename));
   });
 });
 
