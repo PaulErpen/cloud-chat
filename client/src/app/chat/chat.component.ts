@@ -21,13 +21,14 @@ export class ChatComponent implements OnInit {
   constructor(private chatService: ChatService, private http: HttpClient) { }
 
   sendMessage() {
-    if(this.files != undefined) {
-      this.chatService.sendFiles(this.files);
-      this.files = undefined;
-      $('#uploadfiles').val("");
+    let inputEl: HTMLInputElement = $('#photo')[0];
+    let fileCount: number = inputEl.files.length;
+    if (fileCount > 0) { // a file was selected
+      this.upload(inputEl);
+    } else {
+      this.chatService.sendMessage(this.message);
+      this.message = '';
     }
-    this.chatService.sendMessage(this.message);
-    this.message = '';
   }
 
   ngOnInit() {
@@ -51,17 +52,10 @@ export class ChatComponent implements OnInit {
     }
   }
 
-  upload() {
-        let inputEl: HTMLInputElement = $('#photo')[0];
-        let fileCount: number = inputEl.files.length;
-        let formData = new FormData();
-        if (fileCount > 0) { // a file was selected
-                formData.append('photo', inputEl.files.item(0));
-            this.http
-                .post("http://localhost:3000/upload", 
-                formData,
-                {responseType: 'text'}).toPromise()
-                .then((res) => console.log(res));
-          }
-       }
+  upload(inputEl) {
+    let formData = new FormData();
+    formData.append('message', this.message);
+    formData.append('photo', inputEl.files.item(0));
+    this.chatService.sendFile(formData);
+  }
 }
