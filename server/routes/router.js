@@ -2,6 +2,10 @@ const express = require('express');
 const router = express.Router();
 const user = require('../user/user');
 
+/**
+ * Checks if Parameters are undefined
+ * Passes login request on to user login function and sends back result
+ */
 router.post('/login', function(req, res){
   if((req.body.username == undefined && 
   req.body.password == undefined)) {
@@ -17,6 +21,10 @@ router.post('/login', function(req, res){
   } 
 });
 
+/**
+ * Checks if Parameters are undefined
+ * Passes register request on to user register function and sends back result
+ */
 router.post('/register', function(req, res){
   if((req.body.username == undefined && 
   req.body.password == undefined)) {

@@ -1,5 +1,11 @@
 const express = require('express');
 
+/**
+ * Returns User if it exists in users, else returns false
+ * @param username
+ * @param password
+ * @returns {*}
+ */
 function login (username, password) {
     var user = users.filter(u => u.username == username && u.password == password);
     if(user.length > 0) {
@@ -9,6 +15,14 @@ function login (username, password) {
     }
 }
 
+/**
+ * Tests if user exists in user
+ * true: returns false
+ * false: adds new user to user and returns user
+ * @param username
+ * @param password
+ * @returns {*}
+ */
 function register (username, password) {
     var user = users.filter(u => u.username == username);
     if(user.length > 0) {
