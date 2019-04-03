@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import * as io from 'socket.io-client';
 import { Observable } from 'rxjs/Observable';
 import { UserListService } from '../user-list/services/user-list.service';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,7 @@ export class ChatService {
   private url = 'http://localhost:3000';
   private socket;
 
-    constructor(private userlistservice: UserListService) {
+    constructor(private userlistservice: UserListService, private http: HttpClient) {
         this.socket = io(this.url);
     }
 
@@ -63,5 +64,17 @@ export class ChatService {
                 observer.next(message);
             });
         });
+    }
+    public sendFile(formData) {
+        var selectedUsers = this.userlistservice.getSelectedUsers();
+        formData.append("selectedUsers", selectedUsers.join(";"));
+        formData.append("username", JSON.parse(localStorage.getItem("currentUser")).username);
+        this.http
+        .post(
+            "http://localhost:3000/upload", 
+            formData,
+            {responseType: 'text'}
+        ).toPromise()
+        .then((res) => console.log(res));
     }
 }

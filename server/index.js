@@ -1,11 +1,12 @@
 var express = require('express'); 
 var app = express();
 var http = require('http').Server(app);
-var io = require('socket.io')(http);
+global.io = require('socket.io')(http);
 var port = process.env.PORT || 3000;
 var path = require('path');
 var router = require('./routes/router.js');
 var bodyParser = require('body-parser');
+var messages = require('./messages/messages');
 
 //joining paths in order to serve public files
 app.use(express.static(path.join(__dirname, 'public')));
@@ -61,35 +62,11 @@ io.on('connection', function(socket){
   });
 
   socket.on('chat broadcast', function(data){
-    var msg = data.message;
-    var username = data.username;
-    var currentdate = new Date();
-    var timestamp = currentdate.getDate() + "."
-        + currentdate.getMonth() + " "
-        + currentdate.getHours() + ":"
-        + currentdate.getMinutes() + ":"
-        + currentdate.getSeconds();
-    io.emit('new broadcast', {"payload":msg, "timestamp":timestamp, "username":username, "type":"broadcast"});
+    messages.sendBroadcast(data);
   });
 
   socket.on('chat message', function(data){
-    var msg = data.message;
-    var currentdate = new Date();
-    var timestamp = currentdate.getDate() + "."
-        + currentdate.getMonth() + " "
-        + currentdate.getHours() + ":"
-        + currentdate.getMinutes() + ":"
-        + currentdate.getSeconds();
-    for(var i = 0; i < data.selectedUsers.length; i++) {
-      var username = data.selectedUsers[i];
-      online_user_sockets[username].socket.emit('new message',
-        {"payload":msg, 
-        "timestamp":timestamp, 
-        "username":data.username, 
-        "type":"message",
-        "users": data.selectedUsers
-      });
-    }
+    messages.sendMessage(data);
   });
 });
 

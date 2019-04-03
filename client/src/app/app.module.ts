@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { FileUploadModule } from 'ng2-file-upload';
 
 import { AppComponent } from './app.component';
 import { ChatService } from './chat/services/chat.service';
@@ -26,7 +27,8 @@ import { UserListComponent } from './chat/user-list/user-list.component';
     BrowserModule,
     FormsModule,
     HttpClientModule,
-    AppRoutingModule
+    AppRoutingModule,
+    FileUploadModule
     ],
   providers: [ChatService, UserListService],
   bootstrap: [AppComponent]
