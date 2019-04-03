@@ -1,6 +1,11 @@
-<input type = "text" [(ngModel)]="username">
-<input type = "password" [(ngModel)]="password">
-<input type = "password" [(ngModel)]="password_repeat">
-<button (click)="register()">Register</button>
-<a href="/login">Click here to login.</a>
+<div class = "registration-panel">
+    <h2>Registration</h2>
+    <input type = "text" [(ngModel)]="username" placeholder="Username">
+    <input type = "password" [(ngModel)]="password" placeholder="Password">
+    <input type = "password" [(ngModel)]="password_repeat" placeholder="Repeat password">
+    <div class = "button-wrapper-broad">
+        <button class = "registration-button" (click)="register()">Register</button>
+    </div>
+    <a href="/login">Click here to login.</a>
+</div>
 <div class = "error">{{error}}</div>

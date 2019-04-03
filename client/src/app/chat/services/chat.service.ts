@@ -49,7 +49,7 @@ export class ChatService {
         var username = user.username;
         var messageData = {
             "message": username +
-                " entered the chatroom.",
+                " exited the chatroom.",
             "username": username
         };
         this.socket.emit('chat logout', messageData);

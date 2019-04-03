@@ -2,9 +2,9 @@ const express = require('express');
 const router = express.Router();
 const user = require('../user/user');
 const fs = require('fs');
-const filemanager = require('../filemanager/filemenager');
 var path = require('path');
 var messages = require("../messages/messages");
+const mimeType = require("../filemanager/mimetype");
 
 var multer = require('multer');
 
@@ -58,14 +58,11 @@ router.post('/upload', function(req, res){
   var path = '';
   upload(req, res, function (err) {
     if (err) {
-      // An error occurred when uploading
       console.log(err);
       res.status(422).send("an Error occured")
     }
-   // No error occured.
-    path = req.file.path;
+
     res.send("Upload Completed for "+path);
-    //filemanager.addFile(req.file, req.body.username, req.body.selectedUsers);
     var selectedUsers = req.body.selectedUsers.split(";"); 
     if(req.body.selectedUsers != "") {
       messages.sendFileMessage(req.body.message, 
@@ -83,23 +80,6 @@ router.post('/upload', function(req, res){
 });
 
 router.get('/file', function(req, res){
-  const mimeType = {
-    '.ico': 'image/x-icon',
-    '.html': 'text/html',
-    '.js': 'text/javascript',
-    '.json': 'application/json',
-    '.css': 'text/css',
-    '.png': 'image/png',
-    '.jpg': 'image/jpeg',
-    '.wav': 'audio/wav',
-    '.mp3': 'audio/mpeg',
-    '.svg': 'image/svg+xml',
-    '.pdf': 'application/pdf',
-    '.doc': 'application/msword',
-    '.eot': 'appliaction/vnd.ms-fontobject',
-    '.ttf': 'aplication/font-sfnt'
-  };
-
   if(req.query == undefined && req.query.name == undefined) {
       res.statusCode = 404;
       res.end(`No name given!`);
@@ -108,7 +88,6 @@ router.get('/file', function(req, res){
   var pathname = main_dir + "/public/files/" + req.query.name;
   fs.exists(pathname, function (exist) {
     if(!exist) {
-      // if the file is not found, return 404
       res.statusCode = 404;
       res.end(`File ${pathname} not found!`);
       return;
