@@ -43,7 +43,7 @@ io.on('connection', function(socket){
     online_user_sockets[data.username] = {"socket": socket, "username": data.username};
 
     io.emit('user update', {"users": online_user_names});
-    io.emit('new-message',{"payload": data.message, "type": "server"});
+    io.emit('new message',{"payload": data.message, "type": "server"});
   });
 
   socket.on('chat logout', function(data) {
@@ -58,7 +58,7 @@ io.on('connection', function(socket){
     );
 
     io.emit('user update', {"users": online_user_names});
-    io.emit('new-message',{"payload":data.message, "type":"server"});
+    io.emit('new message',{"payload":data.message, "type":"server"});
   });
 
   socket.on('chat broadcast', function(data){
