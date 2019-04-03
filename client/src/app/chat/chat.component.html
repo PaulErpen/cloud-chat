@@ -9,8 +9,8 @@
                 <span class = "username" *ngIf="message.type != 'server';">{{message.username}}</span>
                 <span class = "receiving-users" *ngIf="message.type == 'message' || message.tye == 'filemessage';"><span class = "to">to</span><span class = "received-user" *ngFor="let user of message.users">{{user}}</span>
                 </span>
-                <span>{{message.payload}}</span>
-                <a *ngIf="message.type == 'filebroadcast' || message.type == 'filemessage';" href= "{{message.filelink}}">{{message.filename}}</a>
+                <span class = "payload">{{message.payload}}</span>
+                <a class = "filelink" *ngIf="message.type == 'filebroadcast' || message.type == 'filemessage';" href= "{{message.filelink}}">{{message.filename}}</a>
                 <span class = "timestamp" *ngIf="message.type != 'server';">{{message.timestamp}}</span>
             </div>
         </div>
