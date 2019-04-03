@@ -1,17 +1,24 @@
 <app-masthead></app-masthead>
-<app-user-list></app-user-list>
-<div *ngFor="let message of messages">
-    <span *ngIf="message.type != 'server';">{{message.username}}</span>
-    <span *ngIf="message.type == 'message' || message.tye == 'filemessage';">
-        to 
-            <span *ngFor="let user of message.users">{{user}}</span>
-    </span>
-    <span>{{message.payload}}</span>
-    <a *ngIf="message.type == 'filebroadcast' || message.type == 'filemessage';" href= "{{message.filelink}}">{{message.filename}}</a>
-    <span *ngIf="message.type != 'server';">{{message.timestamp}}</span>
+<div class = "main-content">
+    <div class = "left">
+        <app-user-list></app-user-list>
+    </div>
+    <div class = "right">
+        <div class = "messages">
+            <div class = "message" *ngFor="let message of messages">
+                <span class = "username" *ngIf="message.type != 'server';">{{message.username}}</span>
+                <span class = "receiving-users" *ngIf="message.type == 'message' || message.tye == 'filemessage';"><span class = "to">to</span><span class = "received-user" *ngFor="let user of message.users">{{user}}</span>
+                </span>
+                <span>{{message.payload}}</span>
+                <a *ngIf="message.type == 'filebroadcast' || message.type == 'filemessage';" href= "{{message.filelink}}">{{message.filename}}</a>
+                <span class = "timestamp" *ngIf="message.type != 'server';">{{message.timestamp}}</span>
+            </div>
+        </div>
+        
+        <div class = "bottom">
+            <input [(ngModel)]="message" (keyup)="$event.keyCode == 13 && sendMessage()" />
+            <button (click)="sendMessage()">Send</button>
+            <input id="photo" type="file" />
+        </div>
+    </div>
 </div>
-
-<input [(ngModel)]="message" (keyup)="$event.keyCode == 13 && sendMessage()" />
-<button (click)="sendMessage()">Send</button>
-
-<input id="photo" type="file" />

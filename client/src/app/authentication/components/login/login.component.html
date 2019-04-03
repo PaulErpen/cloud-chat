@@ -1,5 +1,10 @@
-<input type = "text" [(ngModel)]="username">
-<input type = "password" [(ngModel)]="password">
-<button (click)="login()">Login</button>
-<a href="/registration">Click here to register.</a>
-<div class = "error">{{this.error}}</div>
+<div class = "login-panel">
+    <h2>Login</h2>
+    <input type = "text" [(ngModel)]="username" placeholder="Username">
+    <input type = "password" [(ngModel)]="password" placeholder="Password">
+    <div class = "button-wrapper-broad">
+        <button class = "login-button" (click)="login()">Login</button>
+    </div>
+    <a href="/registration">Click here to register.</a>
+</div>
+<div *ngIf= "error" class = "error">{{this.error}}</div>
