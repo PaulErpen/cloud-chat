@@ -65,15 +65,10 @@ export class ChatService {
             });
         });
     }
-    public sendFiles (files: FileList) {
-        // for(var i = 0; i < files.length; i++) {
-        //     this.sendFile(files[i]);
-        // }
-    }
     public sendFile(formData) {
         var selectedUsers = this.userlistservice.getSelectedUsers();
-        formData.append("selectedUsers", selectedUsers);
-        formData.append("user", JSON.parse(localStorage.getItem("currentUser")).username);
+        formData.append("selectedUsers", selectedUsers.join(";"));
+        formData.append("username", JSON.parse(localStorage.getItem("currentUser")).username);
         this.http
         .post(
             "http://localhost:3000/upload", 

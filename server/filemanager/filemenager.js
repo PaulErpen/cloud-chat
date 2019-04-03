@@ -1,4 +1,5 @@
 global.files = [];
+const fs = require('fs');
 
 function addFile(file, user, selectedUsers) {
     files.push(
@@ -6,6 +7,14 @@ function addFile(file, user, selectedUsers) {
         "user": user,
         "selectedUser": selectedUsers
     });
+}
+
+function getFileLink(filename) {
+
+}
+
+function fileExists(filename) {
+    
 }
 
 module.exports = {"addFile":addFile};

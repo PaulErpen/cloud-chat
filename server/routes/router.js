@@ -4,6 +4,7 @@ const user = require('../user/user');
 const fs = require('fs');
 const filemanager = require('../filemanager/filemenager');
 var path = require('path');
+var messages = require("../messages/messages");
 
 var multer = require('multer');
 
@@ -56,8 +57,20 @@ router.post('/upload', function(req, res){
    // No error occured.
     path = req.file.path;
     res.send("Upload Completed for "+path);
-    filemanager.addFile(req.file, req.body.user, re.body.selectedUsers);
-    debugger;
+    //filemanager.addFile(req.file, req.body.username, req.body.selectedUsers);
+    var selectedUsers = req.body.selectedUsers.split(";"); 
+    if(req.body.selectedUsers != "") {
+      messages.sendFileMessage(req.body.message, 
+        req.body.username, 
+        "http://localhost:3000/files/"+req.file.filename, 
+        req.file.filename,
+        selectedUsers);
+    } else {
+      messages.sendFileBroadcast(req.body.message, 
+        req.body.username, 
+        "http://localhost:3000/files/"+req.file.filename, 
+        req.file.filename);
+    }
   });
 });
 
