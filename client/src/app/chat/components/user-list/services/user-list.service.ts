@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as io from 'socket.io-client';
 import { Observable } from 'rxjs/Observable';
-import { OnlineUser } from '../../../_models/online_user';
+import { OnlineUser } from '../../../../_models/online_user';
 
 @Injectable({
   providedIn: 'root'
