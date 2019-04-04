@@ -29,11 +29,13 @@ export class UserListService {
     for (let user of users) {
       var isSelected = false;
 
-      for (let oldUser of this.users) {
-        if(oldUser.username == user) isSelected = oldUser.isSelected;
+      if(user != JSON.parse(localStorage.getItem("currentUser")).username) {
+        for (let oldUser of this.users) {
+          if(oldUser.username == user) isSelected = oldUser.isSelected;
+        }
+  
+        newUsers.push({"username": user, "isSelected": isSelected});
       }
-
-      newUsers.push({"username": user, "isSelected": isSelected});
     }
 
     this.users = newUsers;
