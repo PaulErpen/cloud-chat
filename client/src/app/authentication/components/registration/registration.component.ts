@@ -23,6 +23,8 @@ export class RegistrationComponent implements OnInit {
       this.error = "Passwords do not match!";      
     } else if(this.username.length < 1) {
       this.error = "Please enter a username!";
+    } else if(this.username.length > 20) {
+      this.error = "Your username can't be longer than 20 characters!";
     } else if(this.username.includes(";") || this.username.includes(" ")) {
       this.error = "Username can't contain 'spaces' or ';'!";
     } else {
