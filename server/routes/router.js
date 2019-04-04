@@ -68,13 +68,13 @@ router.post('/upload', function(req, res){
       messages.sendFileMessage(req.body.message, 
         req.body.username, 
         "http://localhost:3000/files/"+req.file.filename, 
-        req.file.filename,
+        req.file.originalname,
         selectedUsers);
     } else {
       messages.sendFileBroadcast(req.body.message, 
         req.body.username, 
         "http://localhost:3000/files/"+req.file.filename, 
-        req.file.filename);
+        req.file.originalname);
     }
   });
 });
