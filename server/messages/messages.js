@@ -46,20 +46,27 @@ function sendFileBroadcast(message, username, filelink, filename) {
 }
 
 function sendFileMessage(message, username, filelink, filename, selectedUsers) {
-    var timestamp = getCurrentTimestamp();
-
-    for(var i = 0; i < selectedUsers.length; i++) {
-        var userid = selectedUsers[i];
-        online_user_sockets[userid].socket.emit('new message',
-        {"payload":message,
-        "filename": filename,
-        "filelink": filelink,
-        "timestamp":timestamp, 
-        "username":username, 
-        "type":"filemessage",
-        "users": selectedUsers
-        });
-    }
+  var timestamp = getCurrentTimestamp();
+  var messagePayload = {
+    "payload":message,
+    "filename": filename,
+    "filelink": filelink,
+    "timestamp":timestamp, 
+    "username":username, 
+    "type":"filemessage",
+    "users": selectedUsers
+  };
+  for(var i = 0; i < selectedUsers.length; i++) {
+    var userid = selectedUsers[i];
+    online_user_sockets[userid].socket.emit(
+      'new message',
+      messagePayload
+    );
+  }
+  online_user_sockets[username].socket.emit(
+    'new message',
+    messagePayload
+  );
 }
 
 function getCurrentTimestamp() {
