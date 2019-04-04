@@ -56,6 +56,7 @@ export class ChatComponent implements OnInit {
     let formData = new FormData();
     formData.append('message', this.message);
     formData.append('photo', inputEl.files.item(0));
+    $('#photo')[0].value = "";
     this.chatService.sendFile(formData);
   }
 }
