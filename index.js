@@ -7,10 +7,12 @@ var path = require('path');
 var router = require('./routes/router.js');
 var bodyParser = require('body-parser');
 var messages = require('./messages/messages');
+var cors = require("cors");
 
 //joining paths in order to serve public files
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.options("*", cors());
 //Body parser for POST requests
 app.use(bodyParser.urlencoded({
   extended: false
