@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as io from 'socket.io-client';
 import { Observable } from 'rxjs/Observable';
-import { UserListService } from '../user-list/services/user-list.service';
+import { UserListService } from '../components/user-list/services/user-list.service';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({

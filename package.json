@@ -3,6 +3,6 @@
   "version": "0.0.1",
   "description": "wraps and starts server and client",
   "scripts": {
-    "start": "start_server.sh && start_client.sh"
+    "start": "./start_server.sh & ./start_client.sh"
   }
 }

@@ -19,12 +19,18 @@ export class RegistrationComponent implements OnInit {
   }
 
   register() {
-    if(this.password == this.password_repeat) {
+    if(this.password != this.password_repeat) {
+      this.error = "Passwords do not match!";      
+    } else if(this.username.length < 1) {
+      this.error = "Please enter a username!";
+    } else if(this.username.length > 20) {
+      this.error = "Your username can't be longer than 20 characters!";
+    } else if(this.username.includes(";") || this.username.includes(" ")) {
+      this.error = "Username can't contain 'spaces' or ';'!";
+    } else {
       this.auth.register(this.username, this.password).then(
         (res) => this.registerRedirect(res)
       );
-    } else {
-      this.error = "Passwords have to match!";
     }
   }
 
