@@ -5,6 +5,7 @@ const fs = require('fs');
 var path = require('path');
 var messages = require("../messages/messages");
 const mimeType = require("../filemanager/mimetype");
+var filemanager = require("../filemanager/filemanager");
 
 var multer = require('multer');
 
@@ -63,18 +64,21 @@ router.post('/upload', function(req, res){
     }
 
     res.send("Upload Completed for "+path);
-    var selectedUsers = req.body.selectedUsers.split(";"); 
+
+    var selectedUsers = req.body.selectedUsers.split(";");
+    var sendFile = filemanager.addFile(req.body.file, req.body.username, selectedUsers);
+
     if(req.body.selectedUsers != "") {
       messages.sendFileMessage(req.body.message, 
         req.body.username, 
-        "http://localhost:3000/files/"+req.file.filename, 
-        req.file.originalname,
+        "http://localhost:3000/files/"+sendFile.filename, 
+        sendFile.originalname,
         selectedUsers);
     } else {
       messages.sendFileBroadcast(req.body.message, 
         req.body.username, 
-        "http://localhost:3000/files/"+req.file.filename, 
-        req.file.originalname);
+        "http://localhost:3000/files/"+sendFile.filename, 
+        sendFile.originalname);
     }
   });
 });
