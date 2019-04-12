@@ -1,8 +1,14 @@
 {
   "name": "socket-chat-example",
   "version": "0.0.1",
-  "description": "wraps and starts server and client",
+  "description": "my first socket.io app",
+  "dependencies": {
+    "express": "^4.15.2",
+    "multer": "^1.4.1",
+    "socket.io": "^1.7.3",
+    "body-parser": "^1.18.3"
+  },
   "scripts": {
-    "start": "./start_server.sh"
+    "start": "node index.js"
   }
 }
