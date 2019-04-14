@@ -10,7 +10,7 @@ var messages = require('./messages/messages');
 var cors = require("cors");
 
 const node_env = process.env.NODE_ENV || 'development';
-require('dotenv').config({ path: '.env.${node_env}' });
+require('dotenv').config({ path: '.env.'+node_env});
 console.log(process.env.ACCESS_CONTROL_ALLOW_ORIGIN);
 
 //joining paths in order to serve public files
