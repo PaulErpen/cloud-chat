@@ -11,6 +11,6 @@
     "dotenv": "^7.0.0"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "NODE_ENV=stage node index.js"
   }
 }
