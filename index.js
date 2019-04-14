@@ -9,6 +9,10 @@ var bodyParser = require('body-parser');
 var messages = require('./messages/messages');
 var cors = require("cors");
 
+const node_env = process.env.NODE_ENV || 'development';
+require('dotenv').config({ path: `.env.${node_env}` });
+console.log(process.env.ACCESS_CONTROL_ALLOW_ORIGIN);
+
 //joining paths in order to serve public files
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -21,7 +25,7 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json())
 
 app.use(function (req, res, next) {
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200');
+  res.setHeader('Access-Control-Allow-Origin', process.env.ACCESS_CONTROL_ALLOW_ORIGIN);
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
   res.setHeader('Access-Control-Allow-Credentials', true);
