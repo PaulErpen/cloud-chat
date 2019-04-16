@@ -2,14 +2,16 @@ const ToneAnalyzerV3 = require('watson-developer-cloud/tone-analyzer/v3');
 const toneAnalyzer = new ToneAnalyzerV3({
   version: '2017-09-21',
 });
-const messageCounter = 0;
+var messageCounter = 0;
 
 function sendMessage(data) {
     var msg = data.message;
     var timestamp = getCurrentTimestamp();
-    console.log(getMessageMood(msg));
+    var messageid = getUniqueMessageKey();
+    getMessageMood(msg, messageid);
+
     var messagePayload = {
-      "messageid": 0,
+      "messageid": messageid,
       "payload":msg,
       "file": {
         "filename": "",
@@ -18,10 +20,10 @@ function sendMessage(data) {
       "timestamp":timestamp, 
       "username":data.username, 
       "type":"message",
-      "users": data.selectedUsers
+      "users": data.selectedUsers,
+      "mood":""
     };
 
-    messageCounter++;
     for(var i = 0; i < data.selectedUsers.length; i++) {
       var username = data.selectedUsers[i];
       online_user_sockets[username].socket.emit('new message',
@@ -35,13 +37,14 @@ function sendBroadcast(data) {
     var msg = data.message;
     var username = data.username;
     var timestamp = getCurrentTimestamp();
+    var messageid = getUniqueMessageKey();
 
-    console.log(getMessageMood(msg));
+    getMessageMood(msg, messageid);
 
     io.emit(
       'new broadcast', 
       {
-        "messageid": 0,
+        "messageid": messageid,
         "payload":msg,
         "file": {
           "filename": "",
@@ -50,19 +53,20 @@ function sendBroadcast(data) {
         "timestamp":timestamp, 
         "username":username, 
         "type":"broadcast",
-        "users": []     
+        "users": [],
+        "mood":""
       });
 
-    messageCounter++;
 }
 
 function sendFileBroadcast(message, username, filelink, filename) {
     var timestamp = getCurrentTimestamp();
+    var messageid = getUniqueMessageKey();
 
     io.emit(
       'new broadcast',
       {
-        "messageid": 0,
+        "messageid": messageid,
         "payload":message,
         "file": {
           "filename": filename,
@@ -71,15 +75,16 @@ function sendFileBroadcast(message, username, filelink, filename) {
         "timestamp":timestamp, 
         "username":username, 
         "type":"filebroadcast",
-        "users": []
+        "users": [],
+        "mood":""
       });
-    messageCounter++;
 }
 
 function sendFileMessage(message, username, filelink, filename, selectedUsers) {
   var timestamp = getCurrentTimestamp();
+  var messageid = getUniqueMessageKey();
   var messagePayload = {
-    "messageid": 0,
+    "messageid": messageid,
     "payload":message,
     "file": {
       "filename": filename,
@@ -88,9 +93,9 @@ function sendFileMessage(message, username, filelink, filename, selectedUsers) {
     "timestamp":timestamp, 
     "username":username, 
     "type":"filemessage",
-    "users": selectedUsers
+    "users": selectedUsers,
+    "mood":""
   };
-  messageCounter++;
   for(var i = 0; i < selectedUsers.length; i++) {
     var userid = selectedUsers[i];
     online_user_sockets[userid].socket.emit(
@@ -105,8 +110,9 @@ function sendFileMessage(message, username, filelink, filename, selectedUsers) {
 }
 
 function sendServerMessage(message) {
+  var messageid = getUniqueMessageKey();
   io.emit('new message', {
-    "messageid": 0,
+    "messageid": messageid,
     "payload":message,
     "file": {
       "filename": "",
@@ -115,7 +121,8 @@ function sendServerMessage(message) {
     "timestamp": getCurrentTimestamp(), 
     "username":"", 
     "type":"server",
-    "users": []    
+    "users": [],
+    "mood":""
   });
 }
 
@@ -128,18 +135,32 @@ function getCurrentTimestamp() {
         + currentdate.getSeconds();
 }
 
-function getMessageMood(message) {
+function getUniqueMessageKey() {
+  messageCounter++;
+  return messageCounter;
+}
+
+function getMessageMood(message, id) {
   const toneRequest = createToneRequest([message]);
   if (toneRequest) {
     toneAnalyzer.toneChat(toneRequest, (err, response) => {
       if (err) {
-        return next(err);
+        io.emit('update message', {
+          "messageid": id,
+          "mood":"not able to determine mood"
+        });
+      } else {
+        var moods = "";
+        for (const key in response.utterances_tone[0].tones) {
+          if(key>0) {moods+=", "};
+          moods += response.utterances_tone[0].tones[key].tone_name;
+        }
+        io.emit('update message', {
+          "messageid": id,
+          "mood": moods
+        });
       }
-      return response;
     });
-  }
-  else {
-    return undefined;
   }
 }
 
