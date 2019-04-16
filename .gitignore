@@ -9,3 +9,5 @@ server/.idea
 server/public/files/
 server/npm-debug\.log
 npm-debug.log
+
+public/files/

@@ -66,7 +66,7 @@ router.post('/upload', function(req, res){
     res.send("Upload Completed for "+path);
 
     var selectedUsers = req.body.selectedUsers.split(";");
-    var sendFile = filemanager.addFile(req.body.file, req.body.username, selectedUsers);
+    var sendFile = filemanager.addFile(req.file, req.body.username, selectedUsers);
 
     if(req.body.selectedUsers != "") {
       messages.sendFileMessage(req.body.message, 
