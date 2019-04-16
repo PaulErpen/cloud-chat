@@ -1,3 +1,5 @@
+const node_env = process.env.NODE_ENV || 'development';
+require('dotenv').config({ path: '.env.'+node_env});
 var express = require('express'); 
 var app = express();
 var http = require('http').Server(app);
@@ -9,8 +11,6 @@ var bodyParser = require('body-parser');
 var messages = require('./messages/messages');
 var cors = require("cors");
 
-const node_env = process.env.NODE_ENV || 'development';
-require('dotenv').config({ path: '.env.'+node_env});
 console.log('.env.'+node_env);
 console.log(process.env.ACCESS_CONTROL_ALLOW_ORIGIN);
 
@@ -23,7 +23,7 @@ app.use(bodyParser.urlencoded({
   extended: false
 }));
 // parse application/json
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 
 app.use(function (req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', process.env.ACCESS_CONTROL_ALLOW_ORIGIN);
@@ -50,7 +50,7 @@ io.on('connection', function(socket){
     online_user_sockets[data.username] = {"socket": socket, "username": data.username};
 
     io.emit('user update', {"users": online_user_names});
-    io.emit('new message',{"payload": data.message, "type": "server"});
+    messages.sendServerMessage(data.message);
   });
 
   socket.on('chat logout', function(data) {
@@ -65,7 +65,7 @@ io.on('connection', function(socket){
     );
 
     io.emit('user update', {"users": online_user_names});
-    io.emit('new message',{"payload":data.message, "type":"server"});
+    messages.sendServerMessage(data.message);
   });
 
   socket.on('chat broadcast', function(data){
