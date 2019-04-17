@@ -164,32 +164,6 @@ function getMessageMood(message, id) {
   }
 }
 
-function happyOrUnhappy (response) {
-  const happyTones = ['satisfied', 'excited', 'polite', 'sympathetic'];
-  const unhappyTones = ['sad', 'frustrated', 'impolite'];
-
-  let happyValue = 0;
-  let unhappyValue = 0;
-
-  for (let i in response.utterances_tone) {
-    const utteranceTones = response.utterances_tone[i].tones;
-    for (let j in utteranceTones) {
-      if (happyTones.includes(utteranceTones[j].tone_id)) {
-        happyValue = happyValue + utteranceTones[j].score;
-      }
-      if (unhappyTones.includes(utteranceTones[j].tone_id)) {
-        unhappyValue = unhappyValue + utteranceTones[j].score;
-      }
-    }
-  }
-  if (happyValue >= unhappyValue) {
-    return 'happy';
-  }
-  else {
-    return 'unhappy';
-  }
-}
-
 function createToneRequest (messages) {
   let toneChatRequest;
 
