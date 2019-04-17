@@ -75,6 +75,14 @@ io.on('connection', function(socket){
   socket.on('chat message', function(data){
     messages.sendMessage(data);
   });
+
+  socket.on('file broadcast', function(data){
+    messages.sendFileBroadcast(data);
+  });
+
+  socket.on('file message', function(data){
+    messages.sendFileMessage(data);
+  });
 });
 
 http.listen(port, function(){
