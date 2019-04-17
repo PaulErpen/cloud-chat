@@ -77,7 +77,7 @@ io.on('connection', function(socket){
   });
 
   socket.on('file broadcast', function(data){
-    debugger;
+    messages.sendFileBroadcast(data);
   });
 
   socket.on('file message', function(data){

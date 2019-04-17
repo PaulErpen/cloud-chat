@@ -13,10 +13,7 @@ function sendMessage(data) {
     var messagePayload = {
       "messageid": messageid,
       "payload":msg,
-      "file": {
-        "filename": "",
-        "filelink": "",
-      },
+      "file": "",
       "timestamp":timestamp, 
       "username":data.username, 
       "type":"message",
@@ -46,10 +43,7 @@ function sendBroadcast(data) {
       {
         "messageid": messageid,
         "payload":msg,
-        "file": {
-          "filename": "",
-          "filelink": "",
-        },
+        "file": "",
         "timestamp":timestamp, 
         "username":username, 
         "type":"broadcast",
@@ -59,25 +53,39 @@ function sendBroadcast(data) {
 
 }
 
-function sendFileBroadcast(message, username, filelink, filename) {
-    var timestamp = getCurrentTimestamp();
-    var messageid = getUniqueMessageKey();
-
-    io.emit(
-      'new broadcast',
+function sendFileBroadcast(data) {
+  var messageid =  getUniqueMessageKey();
+  getMessageMood(data.message, messageid);
+  io.emit(
+      'new filebroadcast',
       {
         "messageid": messageid,
-        "payload":message,
-        "file": {
-          "filename": filename,
-          "filelink": filelink
-        },
-        "timestamp":timestamp, 
-        "username":username, 
+        "payload":data.message,
+        "file": data.file,
+        "timestamp": getCurrentTimestamp(), 
+        "username": data.username, 
         "type":"filebroadcast",
         "users": [],
         "mood":""
       });
+    // var timestamp = getCurrentTimestamp();
+    // var messageid = getUniqueMessageKey();
+
+    // io.emit(
+    //   'new broadcast',
+    //   {
+    //     "messageid": messageid,
+    //     "payload":message,
+    //     "file": {
+    //       "filename": filename,
+    //       "filelink": filelink
+    //     },
+    //     "timestamp":timestamp, 
+    //     "username":username, 
+    //     "type":"filebroadcast",
+    //     "users": [],
+    //     "mood":""
+    //   });
 }
 
 function sendFileMessage(message, username, filelink, filename, selectedUsers) {
@@ -86,10 +94,7 @@ function sendFileMessage(message, username, filelink, filename, selectedUsers) {
   var messagePayload = {
     "messageid": messageid,
     "payload":message,
-    "file": {
-      "filename": filename,
-      "filelink": filelink
-    },
+    "file": "",
     "timestamp":timestamp, 
     "username":username, 
     "type":"filemessage",
@@ -114,10 +119,7 @@ function sendServerMessage(message) {
   io.emit('new message', {
     "messageid": messageid,
     "payload":message,
-    "file": {
-      "filename": "",
-      "filelink": ""
-    },
+    "file": "",
     "timestamp": getCurrentTimestamp(), 
     "username":"", 
     "type":"server",
