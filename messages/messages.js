@@ -68,47 +68,29 @@ function sendFileBroadcast(data) {
         "users": [],
         "mood":""
       });
-    // var timestamp = getCurrentTimestamp();
-    // var messageid = getUniqueMessageKey();
-
-    // io.emit(
-    //   'new broadcast',
-    //   {
-    //     "messageid": messageid,
-    //     "payload":message,
-    //     "file": {
-    //       "filename": filename,
-    //       "filelink": filelink
-    //     },
-    //     "timestamp":timestamp, 
-    //     "username":username, 
-    //     "type":"filebroadcast",
-    //     "users": [],
-    //     "mood":""
-    //   });
 }
 
-function sendFileMessage(message, username, filelink, filename, selectedUsers) {
-  var timestamp = getCurrentTimestamp();
+function sendFileMessage(data) {
   var messageid = getUniqueMessageKey();
+  getMessageMood(data.message, messageid);
   var messagePayload = {
     "messageid": messageid,
-    "payload":message,
-    "file": "",
-    "timestamp":timestamp, 
-    "username":username, 
-    "type":"filemessage",
-    "users": selectedUsers,
+    "payload": data.message,
+    "file": data.file,
+    "timestamp": getCurrentTimestamp(), 
+    "username": data.username, 
+    "type": "filemessage",
+    "users": data.selectedUsers,
     "mood":""
   };
-  for(var i = 0; i < selectedUsers.length; i++) {
-    var userid = selectedUsers[i];
+  for(var i = 0; i < data.selectedUsers.length; i++) {
+    var userid = data.selectedUsers[i];
     online_user_sockets[userid].socket.emit(
       'new message',
       messagePayload
     );
   }
-  online_user_sockets[username].socket.emit(
+  online_user_sockets[data.username].socket.emit(
     'new message',
     messagePayload
   );

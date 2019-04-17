@@ -81,7 +81,7 @@ io.on('connection', function(socket){
   });
 
   socket.on('file message', function(data){
-    debugger;
+    messages.sendFileMessage(data);
   });
 });
 
