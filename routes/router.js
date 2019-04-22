@@ -1,21 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const user = require('../user/user');
+const authentication = require('../authentication/authentication')();
 const fs = require('fs');
 var path = require('path');
 var messages = require("../messages/messages");
 const mimeType = require("../filemanager/mimetype");
-var filemanager = require("../filemanager/filemanager");
-
-var multer = require('multer');
-
-var DIR = '../public/files';
-var storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, main_dir+"/public/files")
-  }
-})
-var upload = multer({storage: storage}).single('photo');
 
 /**
  * Checks if Parameters are undefined
@@ -53,65 +42,6 @@ router.post('/register', function(req, res){
       }
     );
   }
-});
-
-router.post('/upload', function(req, res){
-  var path = '';
-  upload(req, res, function (err) {
-    if (err) {
-      console.log(err);
-      res.status(422).send("an Error occured")
-    }
-
-    res.send("Upload Completed for "+path);
-
-    var selectedUsers = req.body.selectedUsers.split(";");
-    var sendFile = filemanager.addFile(req.file, req.body.username, selectedUsers);
-
-    if(req.body.selectedUsers != "") {
-      messages.sendFileMessage(req.body.message, 
-        req.body.username, 
-        "http://localhost:3000/files/"+sendFile.filename, 
-        sendFile.originalname,
-        selectedUsers);
-    } else {
-      messages.sendFileBroadcast(req.body.message, 
-        req.body.username, 
-        "http://localhost:3000/files/"+sendFile.filename, 
-        sendFile.originalname);
-    }
-  });
-});
-
-router.get('/file', function(req, res){
-  if(req.query == undefined && req.query.name == undefined) {
-      res.statusCode = 404;
-      res.end(`No name given!`);
-  }
-  
-  var pathname = main_dir + "/public/files/" + req.query.name;
-  fs.exists(pathname, function (exist) {
-    if(!exist) {
-      res.statusCode = 404;
-      res.end(`File ${pathname} not found!`);
-      return;
-    }
-
-    if (fs.statSync(pathname).isDirectory()) {
-      pathname += '/index.html';
-    }
-
-    fs.readFile(pathname, function(err, data){
-      if(err){
-        res.statusCode = 500;
-        res.end(`Error getting the file: ${err}.`);
-      } else {
-        const ext = path.parse(pathname).ext;
-        res.setHeader('Content-type', mimeType[ext] || 'text/plain' );
-        res.end(data);
-      }
-    });
-  });
 });
 
 module.exports = router;

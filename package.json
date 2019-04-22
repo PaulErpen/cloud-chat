@@ -9,7 +9,8 @@
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
     "dotenv": "^7.0.0",
-    "watson-developer-cloud": "^4.0.1"
+    "watson-developer-cloud": "^4.0.1",
+    "request": "^2.88.0"
   },
   "scripts": {
     "start": "node index.js"
