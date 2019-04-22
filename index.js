@@ -11,9 +11,6 @@ var bodyParser = require('body-parser');
 var messages = require('./messages/messages');
 var cors = require("cors");
 
-console.log('.env.'+node_env);
-console.log(process.env.ACCESS_CONTROL_ALLOW_ORIGIN);
-
 //joining paths in order to serve public files
 app.use(express.static(path.join(__dirname, 'public')));
 
