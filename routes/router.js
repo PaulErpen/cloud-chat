@@ -17,7 +17,7 @@ router.post('/login', function(req, res){
   } else {
     auth.login(req.body.username, req.body.password).then(
       function(result) {
-        res.send(false);
+        res.send({"result":result[0].rows_count>0});
       }
     );
   } 
@@ -35,10 +35,16 @@ router.post('/register', function(req, res){
     res.send(false);
   } else {
     auth.register(req.body.username, req.body.password).then(
-      function(result) {
-        res.send(false);
+      (result) => {
+        if(result != false) {
+          auth.login(req.body.username, req.body.password).then(
+            function(result) {
+              res.send({"result":result[0].rows_count>0});
+            }
+          );
+        }
       }
-    );
+    )
   }
 });
 
