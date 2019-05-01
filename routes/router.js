@@ -1,10 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const authentication = new require('../authentication/authentication');
+const authentication = new require('../database/authentication');
+const userimage = new require('../database/userimage');
 const auth = new authentication();
-const fs = require('fs');
-var path = require('path');
-var messages = require("../messages/messages");
+const database = require("../database/database");
 
 /**
  * Checks if Parameters are undefined
@@ -30,11 +29,12 @@ router.post('/login', function(req, res){
 router.post('/register', function(req, res){
   if(
     req.body.username == undefined || 
-    req.body.password == undefined
+    req.body.password == undefined ||
+    req.body.profilepic == undefined
     ) {
     res.send(false);
   } else {
-    auth.register(req.body.username, req.body.password).then(
+    auth.register(req.body.username, req.body.password, req.body.profilepic).then(
       (result) => {
         if(result != false) {
           auth.login(req.body.username, req.body.password).then(
@@ -45,6 +45,30 @@ router.post('/register', function(req, res){
         }
       }
     )
+  }
+});
+
+router.post('/userimage', function(req, res){
+  if(
+    req.body.username == undefined
+    ) {
+    res.send(false);
+  } else {
+    userimage.getUserImage(req.body.username).then(
+      function(result) {
+        if(result[0].rows[0] != undefined && result[0].rows[0][0] != undefined) {
+          res.send({
+            "image": database.cleanString(result[0].rows[0][0]),
+            "username": req.body.username
+          });
+        } else {
+          res.send({
+            "image": "",
+            "username": req.body.username
+          });
+        }
+      }
+    );
   }
 });
 
