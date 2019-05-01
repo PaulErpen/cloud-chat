@@ -1,31 +1,7 @@
 const request = require('request-promise');
+const database = require('./database');
 
 class Authentication {
-    getToken() {
-        var options = {
-            method: 'POST',
-            url: process.env.DATABASE_URL+'/auth',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: {
-                "userid":"vxc32889", 
-                "password":"lf4t3w-546qv5d11"
-            },
-            json: true
-        };
-        return request(options).then(
-            (body) => {
-                if(!body.token) {
-                    throw "Could not get token for database transactions. Please check validity of the userid and password."
-                }
-                return body.token;
-            }
-        ).catch(function(error) {
-            throw error;
-        });
-    }
-
     /**
      * Returns User if it exists in users, else returns false
      * @param username
@@ -33,7 +9,7 @@ class Authentication {
      * @returns {*}
      */
     async login (username, password) {
-        return this.getToken().then((token) => {
+        return database.getToken().then((token) => {
             var options = {
                 method: 'POST',
                 url: process.env.DATABASE_URL+'/sql_jobs',
@@ -63,7 +39,7 @@ class Authentication {
     async awaitQuery(body) {
         //wait a moment so the database can process
         await this.sleep(500);
-        return this.getToken().then((token) => {
+        return database.getToken().then((token) => {
             if(body.id) {
                 if(!body.status || body.status != "completed") {
                     var options = {
@@ -101,7 +77,7 @@ class Authentication {
         return this.userExists(username).then(
             (result) => {
                 if(result[0].rows_count == 0) {
-                    return this.getToken().then((token) => {
+                    return database.getToken().then((token) => {
                         var options = {
                             method: 'POST',
                             url: process.env.DATABASE_URL+'/sql_jobs',
@@ -133,7 +109,7 @@ class Authentication {
     }
 
     userExists(username) {
-        return this.getToken().then((token) => {
+        return database.getToken().then((token) => {
             var options = {
                 method: 'POST',
                 url: process.env.DATABASE_URL+'/sql_jobs',
