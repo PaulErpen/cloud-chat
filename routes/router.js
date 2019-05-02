@@ -1,8 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const authentication = new require('../database/authentication');
 const userimage = new require('../database/userimage');
-const auth = new authentication();
+const auth = new require('../database/authentication');
 const database = require("../database/database");
 
 /**
