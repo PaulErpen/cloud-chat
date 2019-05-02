@@ -45,7 +45,7 @@ async function awaitQuery(body) {
                     json: true
                 };
                 return request(options).then((body) => {
-                    return this.awaitQuery(body);
+                    return awaitQuery(body);
                 }).catch(function(error) {
                     throw error;
                 });
