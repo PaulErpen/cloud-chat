@@ -33,11 +33,11 @@ function sendMessage(data) {
         messagePayload);
 
     for(var i = 0; i < data.selectedUsers.length; i++) {
-        var username = data.selectedUsers[i];
-        translateMessage(data, username, messagePayload).then( result => {
+        var messagetargetusername = data.selectedUsers[i];
+        translateMessage(data, messagetargetusername, messagePayload).then( result => {
             if(result != null) {
-                messagePayload.payload = result;
-                online_user_sockets[username].socket.emit('new message', messagePayload);
+                messagePayload.payload = result.message;
+                online_user_sockets[result.target].socket.emit('new message', messagePayload);
                 messagePayload.payload = msg;
             }
         });
@@ -52,9 +52,7 @@ function sendBroadcast(data) {
 
     getMessageMood(msg, messageid);
 
-    io.emit(
-      'new broadcast',
-      {
+    var messagePayload = {
         "messageid": messageid,
         "payload":msg,
         "file": "",
@@ -63,7 +61,23 @@ function sendBroadcast(data) {
         "type":"broadcast",
         "users": [],
         "mood":""
-      });
+    };
+
+    online_user_sockets[username].socket.emit('new broadcast',
+        messagePayload);
+
+    for(var i = 0; i < online_user_names.length; i++) {
+        var broadcasttargetusername = online_user_names[i];
+        if(username != broadcasttargetusername) {
+            translateMessage(data, broadcasttargetusername, messagePayload).then( result => {
+                if(result != null) {
+                    messagePayload.payload = result.message;
+                    online_user_sockets[result.target].socket.emit('new broadcast', messagePayload);
+                    messagePayload.payload = msg;
+                }
+            });
+        }
+    }
 
 }
 
@@ -177,7 +191,7 @@ function createToneRequest (messages) {
   return toneChatRequest;
 }
 
-function translateMessage(data, username, messagePayload) {
+function translateMessage(data, targetusername, messagePayload) {
     var currentLanguage = null;
     var targetLanguage = null;
     var msg = data.message;
@@ -191,7 +205,7 @@ function translateMessage(data, username, messagePayload) {
         .then(identifiedLanguages => {
             currentLanguage = identifiedLanguages.languages[0].language;
 
-            return userinfo.getUserLanguage(username).then(
+            return userinfo.getUserLanguage(targetusername).then(
                 function(result) {
                     targetLanguage = database.cleanString(result[0].rows[0][0]);
 
@@ -211,7 +225,7 @@ function translateMessage(data, username, messagePayload) {
                                     return languageTranslator.translate(translateParams)
                                         .then(translationResult => {
                                             newmessage = translationResult.translations[0].translation;
-                                            return newmessage;
+                                            return {"target": targetusername, "message": newmessage};
                                         })
                                         .catch(err => {
                                             console.log('error:', err);
