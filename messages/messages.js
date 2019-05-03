@@ -8,13 +8,6 @@ const languageTranslator = new LanguageTranslatorV3({
     iam_apikey: 'WxFRwTlgJTAd5l1PQA2MoxGn2xV4jtJHTqMZ1SYd9Nxi',
     url: 'https://gateway-fra.watsonplatform.net/language-translator/api'
 });
-var availableModels = languageTranslator.listModels()
-    .then(translationModels => {
-        // console.log(JSON.stringify(translationModels, null, 2));
-    })
-    .catch(err => {
-        console.log('error:', err);
-    });
 var messageCounter = 0;
 var userinfo = require('../database/userinfo');
 var database = require('../database/database');
@@ -45,7 +38,6 @@ function sendMessage(data) {
             if(result != null) {
                 messagePayload.payload = result;
                 online_user_sockets[username].socket.emit('new message', messagePayload);
-                //reset messagePayload
                 messagePayload.payload = msg;
             }
         });
@@ -61,13 +53,13 @@ function sendBroadcast(data) {
     getMessageMood(msg, messageid);
 
     io.emit(
-      'new broadcast', 
+      'new broadcast',
       {
         "messageid": messageid,
         "payload":msg,
         "file": "",
-        "timestamp":timestamp, 
-        "username":username, 
+        "timestamp":timestamp,
+        "username":username,
         "type":"broadcast",
         "users": [],
         "mood":""
@@ -205,26 +197,35 @@ function translateMessage(data, username, messagePayload) {
 
                     var model = currentLanguage + "-" + targetLanguage;
 
-                    // check if model is available
-                    for(var i = 0; i < availableModels.length; i++) {
-                        if(model === availableModels.model_id) {
-                            const translateParams = {
-                                text: messagePayload.payload,
-                                model_id: model,
-                            };
+                    return languageTranslator.listModels()
+                        .then(availableModels => {
+                            for(var index = 1; index < availableModels.models.length; index++) {
+                                var modelexists = false;
+                                if(model === availableModels.models[index].model_id) {
+                                    modelexists = true;
+                                    const translateParams = {
+                                        text: messagePayload.payload,
+                                        model_id: model,
+                                    };
 
-                            return languageTranslator.translate(translateParams)
-                                .then(translationResult => {
-                                    newmessage = translationResult.translations[0].translation;
-                                    return newmessage;
-                                })
-                                .catch(err => {
-                                    console.log('error:', err);
-                                    return null;
-                                });
-                        }
-                    }
-                    // return msg;
+                                    return languageTranslator.translate(translateParams)
+                                        .then(translationResult => {
+                                            newmessage = translationResult.translations[0].translation;
+                                            return newmessage;
+                                        })
+                                        .catch(err => {
+                                            console.log('error:', err);
+                                            return null;
+                                        });
+                                }
+                            }
+                            if(!modelexists) {
+                                return msg;
+                            }
+                        })
+                        .catch(err => {
+                            console.log('error:', err);
+                        });
                 });
         })
         .catch(err => {
