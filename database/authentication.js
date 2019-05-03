@@ -43,7 +43,7 @@ async function login (username, password) {
  * @param password
  * @returns {*}
  */
-async function register (username, password, userpic) {
+async function register (username, password, userpic, language) {
     return userExists(username).then(
         (result) => {
             if(result[0].rows_count == 0) {
@@ -56,7 +56,7 @@ async function register (username, password, userpic) {
                             'Authorization': "Bearer " + token
                         },
                         body: {
-                            "commands": "INSERT INTO users VALUES('''" + username + "''', '''"+password+"''', '''"+userpic+"''')",
+                            "commands": "INSERT INTO users VALUES('''" + username + "''', '''"+password+"''', '''"+userpic+"''', '''"+language+"''')",
                             "limit": 10,
                             "separator": ";",
                             "stop_on_error": "no"
