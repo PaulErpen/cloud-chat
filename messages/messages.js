@@ -78,50 +78,69 @@ function sendBroadcast(data) {
             });
         }
     }
-
 }
 
 function sendFileBroadcast(data) {
   var messageid =  getUniqueMessageKey();
+  var msg = data.message;
   getMessageMood(data.message, messageid);
-  io.emit(
-      'new filebroadcast',
-      {
+
+    var messagePayload = {
         "messageid": messageid,
-        "payload":data.message,
+        "payload": msg,
         "file": data.file,
-        "timestamp": getCurrentTimestamp(), 
-        "username": data.username, 
+        "timestamp": getCurrentTimestamp(),
+        "username": data.username,
         "type":"filebroadcast",
         "users": [],
         "mood":""
-      });
+    };
+
+    online_user_sockets[data.username].socket.emit('new filebroadcast',
+        messagePayload);
+
+    for(var i = 0; i < online_user_names.length; i++) {
+        var filebroadcasttargetusername = online_user_names[i];
+        if(data.username != filebroadcasttargetusername) {
+            translateMessage(data, filebroadcasttargetusername, messagePayload).then( result => {
+                if(result != null) {
+                    messagePayload.payload = result.message;
+                    online_user_sockets[result.target].socket.emit('new filebroadcast', messagePayload);
+                    messagePayload.payload = msg;
+                }
+            });
+        }
+    }
 }
 
 function sendFileMessage(data) {
-  var messageid = getUniqueMessageKey();
-  getMessageMood(data.message, messageid);
-  var messagePayload = {
-    "messageid": messageid,
-    "payload": data.message,
-    "file": data.file,
-    "timestamp": getCurrentTimestamp(), 
-    "username": data.username, 
-    "type": "filemessage",
-    "users": data.selectedUsers,
-    "mood":""
-  };
-  for(var i = 0; i < data.selectedUsers.length; i++) {
-    var userid = data.selectedUsers[i];
-    online_user_sockets[userid].socket.emit(
-      'new message',
-      messagePayload
-    );
-  }
-  online_user_sockets[data.username].socket.emit(
-    'new message',
-    messagePayload
-  );
+    var messageid = getUniqueMessageKey();
+    var msg = data.message;
+    getMessageMood(msg, messageid);
+    var messagePayload = {
+        "messageid": messageid,
+        "payload": data.message,
+        "file": data.file,
+        "timestamp": getCurrentTimestamp(),
+        "username": data.username,
+        "type": "filemessage",
+        "users": data.selectedUsers,
+        "mood":""
+    };
+
+    online_user_sockets[data.username].socket.emit('new message',
+        messagePayload);
+
+    for(var i = 0; i < data.selectedUsers.length; i++) {
+        var messagetargetusername = data.selectedUsers[i];
+        translateMessage(data, messagetargetusername, messagePayload).then( result => {
+            if(result != null) {
+                messagePayload.payload = result.message;
+                online_user_sockets[result.target].socket.emit('new message', messagePayload);
+                messagePayload.payload = msg;
+            }
+        });
+    }
 }
 
 function sendServerMessage(message) {
