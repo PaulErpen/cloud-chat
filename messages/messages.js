@@ -8,6 +8,13 @@ const languageTranslator = new LanguageTranslatorV3({
     iam_apikey: 'WxFRwTlgJTAd5l1PQA2MoxGn2xV4jtJHTqMZ1SYd9Nxi',
     url: 'https://gateway-fra.watsonplatform.net/language-translator/api'
 });
+var availableModels = languageTranslator.listModels()
+    .then(translationModels => {
+        // console.log(JSON.stringify(translationModels, null, 2));
+    })
+    .catch(err => {
+        console.log('error:', err);
+    });
 var messageCounter = 0;
 var userinfo = require('../database/userinfo');
 var database = require('../database/database');
@@ -196,25 +203,28 @@ function translateMessage(data, username, messagePayload) {
                 function(result) {
                     targetLanguage = database.cleanString(result[0].rows[0][0]);
 
-                    console.log(currentLanguage);
-                    console.log(targetLanguage);
                     var model = currentLanguage + "-" + targetLanguage;
-                    console.log(model);
 
-                    const translateParams = {
-                        text: messagePayload.payload,
-                        model_id: model,
-                    };
+                    // check if model is available
+                    for(var i = 0; i < availableModels.length; i++) {
+                        if(model === availableModels.model_id) {
+                            const translateParams = {
+                                text: messagePayload.payload,
+                                model_id: model,
+                            };
 
-                    return languageTranslator.translate(translateParams)
-                        .then(translationResult => {
-                            newmessage = translationResult.translations[0].translation;
-                            return newmessage;
-                        })
-                        .catch(err => {
-                            console.log('error:', err);
-                            return null;
-                        });
+                            return languageTranslator.translate(translateParams)
+                                .then(translationResult => {
+                                    newmessage = translationResult.translations[0].translation;
+                                    return newmessage;
+                                })
+                                .catch(err => {
+                                    console.log('error:', err);
+                                    return null;
+                                });
+                        }
+                    }
+                    // return msg;
                 });
         })
         .catch(err => {

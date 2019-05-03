@@ -27,13 +27,14 @@ router.post('/login', function(req, res){
  */
 router.post('/register', function(req, res){
   if(
-    req.body.username == undefined || 
-    req.body.password == undefined ||
-    req.body.profilepic == undefined
+      req.body.username == undefined ||
+      req.body.password == undefined ||
+      req.body.profilepic == undefined ||
+      req.body.language == undefined
     ) {
     res.send(false);
   } else {
-    auth.register(req.body.username, req.body.password, req.body.profilepic).then(
+    auth.register(req.body.username, req.body.password, req.body.profilepic, req.body.language).then(
       (result) => {
         if(result != false) {
           auth.login(req.body.username, req.body.password).then(
