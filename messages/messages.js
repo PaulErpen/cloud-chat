@@ -2,7 +2,15 @@ const ToneAnalyzerV3 = require('watson-developer-cloud/tone-analyzer/v3');
 const toneAnalyzer = new ToneAnalyzerV3({
   version: '2017-09-21',
 });
+const LanguageTranslatorV3 = require('watson-developer-cloud/language-translator/v3');
+const languageTranslator = new LanguageTranslatorV3({
+    version: '2018-05-01',
+    iam_apikey: 'WxFRwTlgJTAd5l1PQA2MoxGn2xV4jtJHTqMZ1SYd9Nxi',
+    url: 'https://gateway-fra.watsonplatform.net/language-translator/api'
+});
 var messageCounter = 0;
+var userinfo = require('../database/userinfo');
+var database = require('../database/database');
 
 function sendMessage(data) {
     var msg = data.message;
@@ -21,13 +29,20 @@ function sendMessage(data) {
       "mood":""
     };
 
-    for(var i = 0; i < data.selectedUsers.length; i++) {
-      var username = data.selectedUsers[i];
-      online_user_sockets[username].socket.emit('new message',
-        messagePayload);
-    }
     online_user_sockets[data.username].socket.emit('new message',
-    messagePayload);
+        messagePayload);
+
+    for(var i = 0; i < data.selectedUsers.length; i++) {
+        var username = data.selectedUsers[i];
+        translateMessage(data, username, messagePayload).then( result => {
+            if(result != null) {
+                messagePayload.payload = result;
+                online_user_sockets[username].socket.emit('new message', messagePayload);
+                //reset messagePayload
+                messagePayload.payload = msg;
+            }
+        });
+    }
 }
 
 function sendBroadcast(data) {
@@ -163,10 +178,67 @@ function createToneRequest (messages) {
   return toneChatRequest;
 }
 
+function translateMessage(data, username, messagePayload) {
+    var currentLanguage = null;
+    var targetLanguage = null;
+    var msg = data.message;
+    var newmessage = null;
+
+    const identifyParams = {
+        text: msg
+    };
+
+    return languageTranslator.identify(identifyParams)
+        .then(identifiedLanguages => {
+            currentLanguage = identifiedLanguages.languages[0].language;
+
+            return userinfo.getUserLanguage(username).then(
+                function(result) {
+                    targetLanguage = database.cleanString(result[0].rows[0][0]);
+
+                    console.log(currentLanguage);
+                    console.log(targetLanguage);
+                    var model = currentLanguage + "-" + targetLanguage;
+                    console.log(model);
+
+                    const translateParams = {
+                        text: messagePayload.payload,
+                        model_id: model,
+                    };
+
+                    return languageTranslator.translate(translateParams)
+                        .then(translationResult => {
+                            newmessage = translationResult.translations[0].translation;
+                            return newmessage;
+                        })
+                        .catch(err => {
+                            console.log('error:', err);
+                            return null;
+                        });
+                });
+        })
+        .catch(err => {
+            console.log('error:', err);
+        });
+}
+
+function sendAvailableLanguages() {
+    var availableLanguages;
+    languageTranslator.listIdentifiableLanguages()
+        .then(identifiedLanguages => {
+            availableLanguages = identifiedLanguages;
+            io.emit('available languages', availableLanguages);
+        })
+        .catch(err => {
+            console.log('error:', err);
+        });
+}
+
 module.exports = {
     "sendMessage": sendMessage,
     "sendBroadcast": sendBroadcast,
     "sendFileBroadcast": sendFileBroadcast,
     "sendFileMessage": sendFileMessage,
-    "sendServerMessage": sendServerMessage
+    "sendServerMessage": sendServerMessage,
+    "sendAvailableLanguages": sendAvailableLanguages
 };

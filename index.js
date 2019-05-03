@@ -40,6 +40,9 @@ global.online_user_names = [];
 global.online_user_sockets = new Array();
 
 io.on('connection', function(socket){
+
+  messages.sendAvailableLanguages();
+
   socket.on('chat login', function(data) {
     if(!online_user_names.includes(data.username)) {
       online_user_names.push(data.username);
