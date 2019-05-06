@@ -12,7 +12,8 @@
     "request-promise": "^4.2.4",
     "socket.io": "^1.7.3",
     "watson-developer-cloud": "^4.0.1",
-    "x-frame-options": "^1.0.0"
+    "x-frame-options": "^1.0.0",
+    "hsts": "^2.2.0"
   },
   "engines": {
     "node": ">=10.15.3"

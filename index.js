@@ -11,11 +11,13 @@ var bodyParser = require('body-parser');
 var messages = require('./messages/messages');
 var cors = require("cors");
 var xFrameOptions = require('x-frame-options')
+const hsts = require('hsts')
 
 //joining paths in order to serve public files
 app.use(express.static(path.join(__dirname, 'public')));
 
 if(node_env != 'development') {
+  //block all non https requests
   app.use (function (req, res, next) {
     if (req.headers && req.headers.$wssc === "https")
         {
@@ -24,8 +26,15 @@ if(node_env != 'development') {
          res.status(403).send();
      }
  });
+
+ //use HTTP Strict Transport Security middleware
+  //in order to force https from now on
+  app.use(hsts({
+    maxAge: 604800  // 7 days in seconds
+  }))
 }
 
+//configure x-frame header
 app.use(xFrameOptions());
 
 app.options("*", cors());
