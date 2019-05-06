@@ -16,13 +16,14 @@ var xFrameOptions = require('x-frame-options')
 app.use(express.static(path.join(__dirname, 'public')));
 
 if(node_env != 'development') {
-  app.use(function (req, res, next) {
-    if (req.secure) {
-      next();
-    } else {
-      res.redirect('https://' + req.headers.host + req.url);
-    }
-  });
+  app.use (function (req, res, next) {
+    if (req.headers && req.headers.$wssc === "https")
+        {
+         next();
+     } else {
+         res.status(403).send();
+     }
+ });
 }
 
 app.use(xFrameOptions());
