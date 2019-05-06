@@ -12,14 +12,21 @@ var messages = require('./messages/messages');
 var cors = require("cors");
 var xFrameOptions = require('x-frame-options')
 const hsts = require('hsts')
-var redirectToHTTPS = require('express-http-to-https').redirectToHTTPS
 
 //joining paths in order to serve public files
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.enable('trust proxy');
+
 if(node_env != 'development') {
   //redirect all non http requests to http
-  app.use(redirectToHTTPS());
+  app.use(function (req, res, next) {
+    if (req.secure) {
+      next();
+    } else {
+      res.redirect('https://' + req.headers.host + req.url);
+    }
+  });
 
 
  //use HTTP Strict Transport Security middleware
