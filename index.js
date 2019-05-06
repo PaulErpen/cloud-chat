@@ -10,9 +10,22 @@ var router = require('./routes/router.js');
 var bodyParser = require('body-parser');
 var messages = require('./messages/messages');
 var cors = require("cors");
+var xFrameOptions = require('x-frame-options')
 
 //joining paths in order to serve public files
 app.use(express.static(path.join(__dirname, 'public')));
+
+if(node_env != 'development') {
+  app.use(function (req, res, next) {
+    if (req.secure) {
+      next();
+    } else {
+      res.redirect('https://' + req.headers.host + req.url);
+    }
+  });
+}
+
+app.use(xFrameOptions());
 
 app.options("*", cors());
 //Body parser for POST requests
