@@ -29,11 +29,11 @@ if(node_env != 'development') {
   });
 
 
- //use HTTP Strict Transport Security middleware
+  //use HTTP Strict Transport Security middleware
   //in order to force https from now on
-  // app.use(hsts({
-  //   maxAge: 604800  // 7 days in seconds
-  // }))
+  app.use(hsts({
+    maxAge: 604800  // 7 days in seconds
+  }))
 }
 
 //configure x-frame header
