@@ -19,7 +19,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.enable('trust proxy');
 
 if(node_env != 'development') {
-  //redirect all non http requests to http
+  //redirect all non http requests to https
   app.use(function (req, res, next) {
     if (req.secure) {
       next();
