@@ -10,9 +10,34 @@ var router = require('./routes/router.js');
 var bodyParser = require('body-parser');
 var messages = require('./messages/messages');
 var cors = require("cors");
+var xFrameOptions = require('x-frame-options')
+const hsts = require('hsts')
 
 //joining paths in order to serve public files
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.enable('trust proxy');
+
+if(node_env != 'development') {
+  //redirect all non http requests to https
+  app.use(function (req, res, next) {
+    if (req.secure) {
+      next();
+    } else {
+      res.redirect('https://' + req.headers.host + req.url);
+    }
+  });
+
+
+ //use HTTP Strict Transport Security middleware
+  //in order to force https from now on
+  // app.use(hsts({
+  //   maxAge: 604800  // 7 days in seconds
+  // }))
+}
+
+//configure x-frame header
+app.use(xFrameOptions());
 
 app.options("*", cors());
 //Body parser for POST requests
