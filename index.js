@@ -33,7 +33,7 @@ if(node_env != 'development') {
   //in order to force https from now on
   app.use(hsts({
     maxAge: 15768000  // 6 months in seconds
-  }))
+  }));
 }
 
 //configure x-frame header
