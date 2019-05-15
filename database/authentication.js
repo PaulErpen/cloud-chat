@@ -7,7 +7,7 @@ const database = require('./database');
  * @param password
  * @returns {*}
  */
-async function login (username, password) {
+async function login (username) {
     return database.getToken().then((token) => {
         var options = {
             method: 'POST',
@@ -17,7 +17,7 @@ async function login (username, password) {
                 'Authorization': "Bearer " + token
             },
             body: {
-                "commands": "SELECT username, password FROM users u WHERE u.password = '''"+password+"''' AND u.username ='''"+username+"'''",
+                "commands": "SELECT password FROM users u WHERE u.username ='''"+username+"'''",
                 "limit": 10,
                 "separator": ";",
                 "stop_on_error": "no"

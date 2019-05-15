@@ -31,7 +31,7 @@ function getToken() {
 
 async function awaitQuery(body) {
     //wait a moment so the database can process
-    await sleep(500);
+    await sleep(50);
     return getToken().then((token) => {
         if(body.id) {
             if(!body.status || body.status != "completed") {

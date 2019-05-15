@@ -3,6 +3,8 @@ const router = express.Router();
 const userimage = new require('../database/userimage');
 const auth = new require('../database/authentication');
 const database = require("../database/database");
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 /**
  * Checks if Parameters are undefined
@@ -13,9 +15,12 @@ router.post('/login', function(req, res){
   req.body.password == undefined)) {
       res.send(false);
   } else {
-    auth.login(req.body.username, req.body.password).then(
+    auth.login(req.body.username).then(
       function(result) {
-        res.send({"result":result[0].rows_count>0});
+        var hashedPassword = database.cleanString(result[0].rows[0][0]);
+        bcrypt.compare(req.body.password, hashedPassword).then((result) => {
+            res.send({"result": result});
+        });
       }
     );
   } 
@@ -34,17 +39,28 @@ router.post('/register', function(req, res){
     ) {
     res.send(false);
   } else {
-    auth.register(req.body.username, req.body.password, req.body.profilepic, req.body.language).then(
-      (result) => {
-        if(result != false) {
-          auth.login(req.body.username, req.body.password).then(
-            function(result) {
-              res.send({"result":result[0].rows_count>0});
+    bcrypt.hash(req.body.password, saltRounds, function(error, hash) {
+      if(error) {
+        res.send({"result":false});
+      } else {
+        auth.register(req.body.username, hash, req.body.profilepic, req.body.language).then(
+          (result) => {
+            if(result) {
+              auth.login(req.body.username).then(
+                function(result) {
+                  var hashedPassword = database.cleanString(result[0].rows[0][0]);
+                  bcrypt.compare(req.body.password, hashedPassword).then((result) => {
+                      res.send({"result": result});
+                  });
+                }
+              );
+            } else {
+              res.send({"result":false});
             }
-          );
-        }
+          }
+        )
       }
-    )
+    });
   }
 });
 
