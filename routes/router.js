@@ -15,14 +15,7 @@ router.post('/login', function(req, res){
   req.body.password == undefined)) {
       res.send(false);
   } else {
-    auth.login(req.body.username).then(
-      function(result) {
-        var hashedPassword = database.cleanString(result[0].rows[0][0]);
-        bcrypt.compare(req.body.password, hashedPassword).then((result) => {
-            res.send({"result": result});
-        });
-      }
-    );
+    handleLogin(req.body.username, req.body.password, res);
   } 
 });
 
@@ -39,28 +32,12 @@ router.post('/register', function(req, res){
     ) {
     res.send(false);
   } else {
-    bcrypt.hash(req.body.password, saltRounds, function(error, hash) {
-      if(error) {
-        res.send({"result":false});
-      } else {
-        auth.register(req.body.username, hash, req.body.profilepic, req.body.language).then(
-          (result) => {
-            if(result) {
-              auth.login(req.body.username).then(
-                function(result) {
-                  var hashedPassword = database.cleanString(result[0].rows[0][0]);
-                  bcrypt.compare(req.body.password, hashedPassword).then((result) => {
-                      res.send({"result": result});
-                  });
-                }
-              );
-            } else {
-              res.send({"result":false});
-            }
-          }
-        )
-      }
-    });
+    handleRegister(
+      req.body.username, 
+      req.body.password, 
+      req.body.profilepic, 
+      req.body.language, res
+    );
   }
 });
 
@@ -87,5 +64,34 @@ router.post('/userimage', function(req, res){
     );
   }
 });
+
+function handleLogin(username, password, res) {
+  auth.login(username).then(
+    function(result) {
+      var hashedPassword = database.cleanString(result[0].rows[0][0]);
+      bcrypt.compare(password, hashedPassword).then((result) => {
+          res.send({"result": result});
+      });
+    }
+  );
+}
+
+function handleRegister(username, password, profilepic, language, res) {
+  bcrypt.hash(password, saltRounds, function(error, hash) {
+    if(error) {
+      res.send({"result":false});
+    } else {
+      auth.register(username, hash, profilepic, language).then(
+        (result) => {
+          if(result) {
+            handleLogin(username, password, res);
+          } else {
+            res.send({"result":false});
+          }
+        }
+      )
+    }
+  });
+}
 
 module.exports = router;
