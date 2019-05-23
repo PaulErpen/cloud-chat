@@ -1,23 +1,25 @@
+//determine which environment to use
 const node_env = process.env.NODE_ENV || 'development';
 require('dotenv').config({ path: '.env.'+node_env});
+
+//import express and initialize server
 var express = require('express'); 
 var app = express();
 var http = require('http').Server(app);
 global.io = require('socket.io')(http);
 var port = process.env.PORT || 3000;
+
+//import required modules
 var path = require('path');
 var router = require('./routes/router.js');
 var bodyParser = require('body-parser');
 var messages = require('./messages/messages');
 var cors = require("cors");
 var xFrameOptions = require('x-frame-options')
-const hsts = require('hsts')
+const hsts = require('hsts');
+var mqlight = require('mqlight');
 
-//joining paths in order to serve public files
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.enable('trust proxy');
-
+//SAFETY CONFIG START
 if(node_env != 'development') {
   //redirect all non http requests to https
   app.use(function (req, res, next) {
@@ -28,7 +30,6 @@ if(node_env != 'development') {
     }
   });
 
-
   //use HTTP Strict Transport Security middleware
   //in order to force https from now on
   app.use(hsts({
@@ -36,10 +37,16 @@ if(node_env != 'development') {
   }));
 }
 
+app.enable('trust proxy');
+
 //configure x-frame header
 app.use(xFrameOptions());
 
 app.options("*", cors());
+//SAFETY CONFIG END
+
+
+//REQUEST CONFIG START
 //Body parser for POST requests
 app.use(bodyParser.urlencoded({
   extended: false
@@ -55,15 +62,17 @@ app.use(function (req, res, next) {
   next();
 });
 
-//importing a router
+//importing our router
 app.use('/', router);
+//REQUEST CONFIG END
 
-//define global variables
+//define global variables, which will be used in other modules
 global.main_dir = __dirname;
 global.users = new Array();
 global.online_user_names = [];
 global.online_user_sockets = new Array();
 
+//configure the sockets for the real time chat
 io.on('connection', function(socket){
 
   messages.sendAvailableLanguages();
