@@ -18,6 +18,7 @@ var usermanager = require('./usermanager/usermanager');
 var cors = require("cors");
 var xFrameOptions = require('x-frame-options')
 const hsts = require('hsts');
+const messagebroker = require("./messagebroker/messagebroker");
 
 //SAFETY CONFIG START
 if(node_env != 'development') {
@@ -70,6 +71,8 @@ global.main_dir = __dirname;
 global.users = new Array();
 global.online_user_names = [];
 global.online_user_sockets = new Array();
+
+messagebroker.setupQueueListener();
 
 //configure the sockets for the real time chat
 io.on('connection', function(socket){
