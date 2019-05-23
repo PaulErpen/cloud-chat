@@ -9,7 +9,6 @@
     "dotenv": "^7.0.0",
     "express": "^4.15.2",
     "hsts": "^2.2.0",
-    "mqlight": "^2.0.2019041500",
     "multer": "^1.4.1",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
