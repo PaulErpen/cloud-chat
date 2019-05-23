@@ -44,7 +44,6 @@ app.use(xFrameOptions());
 app.options("*", cors());
 //SAFETY CONFIG END
 
-
 //REQUEST CONFIG START
 //Body parser for POST requests
 app.use(bodyParser.urlencoded({
@@ -65,6 +64,32 @@ app.use(function (req, res, next) {
 app.use('/', router);
 //REQUEST CONFIG END
 
+//AMQP setup
+var q = 'chat';
+var open = require('amqplib').connect('amqp://zdxlclmp:LsH-3hfJo-tyhiVv9ggB43YUrI9eiEtG@caterpillar.rmq.cloudamqp.com/zdxlclmp');
+
+// Publisher
+open.then(function(conn) {
+  return conn.createChannel();
+}).then(function(ch) {
+  return ch.assertQueue(q).then(function(ok) {
+    return ch.sendToQueue(q, Buffer.from('something to do'));
+  });
+}).catch(console.warn);
+
+// Consumer
+open.then(function(conn) {
+  return conn.createChannel();
+}).then(function(ch) {
+  return ch.assertQueue(q).then(function(ok) {
+    return ch.consume(q, function(msg) {
+      if (msg !== null) {
+        console.log(msg.content.toString());
+        ch.ack(msg);
+      }
+    });
+  });
+}).catch(console.warn);
 
 
 //define global variables, which will be used in other modules
