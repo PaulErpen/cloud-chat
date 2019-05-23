@@ -75,19 +75,19 @@ if(process.env.VCAP_SERVICES) {
   for (var key in services) {
     if (key.lastIndexOf(mqlightServiceName, 0) === 0) {
       mqlightService = services[key][0];
-      opts.service = mqlightService.credentials.nonTLSConnectionLookupURI;
-      opts.user = mqlightService.credentials.username;
-      opts.password = mqlightService.credentials.password;
+      mq_options.service = mqlightService.credentials.nonTLSConnectionLookupURI;
+      mq_options.user = mqlightService.credentials.username;
+      mq_options.password = mqlightService.credentials.password;
     } else if (key.lastIndexOf(messageHubServiceName, 0) === 0) {
       messageHubService = services[key][0];
-      opts.service = messageHubService.credentials.mqlight_lookup_url;
-      opts.user = messageHubService.credentials.user;
-      opts.password = messageHubService.credentials.password;
+      mq_options.service = messageHubService.credentials.mqlight_lookup_url;
+      mq_options.user = messageHubService.credentials.user;
+      mq_options.password = messageHubService.credentials.password;
     }
   }
-  if (!opts.hasOwnProperty('service') ||
-      !opts.hasOwnProperty('user') ||
-      !opts.hasOwnProperty('password')) {
+  if (!mq_options.hasOwnProperty('service') ||
+      !mq_options.hasOwnProperty('user') ||
+      !mq_options.hasOwnProperty('password')) {
     throw 'Error - Check that app is bound to service';
   }
 } else {
