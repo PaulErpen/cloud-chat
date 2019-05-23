@@ -14,6 +14,7 @@ var path = require('path');
 var router = require('./routes/router.js');
 var bodyParser = require('body-parser');
 var messages = require('./messages/messages');
+var usermanager = require('./usermanager/usermanager');
 var cors = require("cors");
 var xFrameOptions = require('x-frame-options')
 const hsts = require('hsts');
@@ -64,34 +65,6 @@ app.use(function (req, res, next) {
 app.use('/', router);
 //REQUEST CONFIG END
 
-//AMQP setup
-var q = 'chat';
-var open = require('amqplib').connect('amqp://zdxlclmp:LsH-3hfJo-tyhiVv9ggB43YUrI9eiEtG@caterpillar.rmq.cloudamqp.com/zdxlclmp');
-
-// Publisher
-open.then(function(conn) {
-  return conn.createChannel();
-}).then(function(ch) {
-  return ch.assertQueue(q).then(function(ok) {
-    return ch.sendToQueue(q, Buffer.from('something to do'));
-  });
-}).catch(console.warn);
-
-// Consumer
-open.then(function(conn) {
-  return conn.createChannel();
-}).then(function(ch) {
-  return ch.assertQueue(q).then(function(ok) {
-    return ch.consume(q, function(msg) {
-      if (msg !== null) {
-        console.log(msg.content.toString());
-        ch.ack(msg);
-      }
-    });
-  });
-}).catch(console.warn);
-
-
 //define global variables, which will be used in other modules
 global.main_dir = __dirname;
 global.users = new Array();
@@ -104,28 +77,11 @@ io.on('connection', function(socket){
   messages.sendAvailableLanguages();
 
   socket.on('chat login', function(data) {
-    if(!online_user_names.includes(data.username)) {
-      online_user_names.push(data.username);
-    }
-    online_user_sockets[data.username] = {"socket": socket, "username": data.username};
-
-    io.emit('user update', {"users": online_user_names});
-    messages.sendServerMessage(data.message);
+    usermanager.userLogin(data);
   });
 
   socket.on('chat logout', function(data) {
-    online_user_names = online_user_names.filter(u => u != data.username);
-
-    online_user_sockets = Object.keys(online_user_sockets)
-      .filter(u => u != data.username)
-      .reduce((obj, key) => {
-        obj[key] = online_user_sockets[key];
-        return obj;
-      }, {}
-    );
-
-    io.emit('user update', {"users": online_user_names});
-    messages.sendServerMessage(data.message);
+    usermanager.userLogout(data);
   });
 
   socket.on('chat broadcast', function(data){
