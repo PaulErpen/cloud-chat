@@ -29,18 +29,22 @@ function sendMessage(data) {
       "mood":""
     };
 
-    online_user_sockets[data.username].socket.emit('new message',
-        messagePayload);
+    if(username in online_user_sockets)
+        online_user_sockets[data.username].socket.emit('new message', messagePayload);
 
     for(var i = 0; i < data.selectedUsers.length; i++) {
         var messagetargetusername = data.selectedUsers[i];
-        translateMessage(data, messagetargetusername, messagePayload).then( result => {
-            if(result != null) {
-                messagePayload.payload = result.message;
-                online_user_sockets[result.target].socket.emit('new message', messagePayload);
-                messagePayload.payload = msg;
-            }
-        });
+
+        //only send a message to the selected user if he actually exists 
+        if(messagetargetusername in online_user_sockets) {
+            translateMessage(data, messagetargetusername, messagePayload).then( result => {
+                if(result != null) {
+                    messagePayload.payload = result.message;
+                    online_user_sockets[result.target].socket.emit('new message', messagePayload);
+                    messagePayload.payload = msg;
+                }
+            });
+        }
     }
 }
 
@@ -63,19 +67,24 @@ function sendBroadcast(data) {
         "mood":""
     };
 
-    online_user_sockets[username].socket.emit('new broadcast',
+    if(username in online_user_sockets)
+        online_user_sockets[username].socket.emit('new broadcast',
         messagePayload);
 
     for(var i = 0; i < online_user_names.length; i++) {
         var broadcasttargetusername = online_user_names[i];
-        if(username != broadcasttargetusername) {
-            translateMessage(data, broadcasttargetusername, messagePayload).then( result => {
-                if(result != null) {
-                    messagePayload.payload = result.message;
-                    online_user_sockets[result.target].socket.emit('new broadcast', messagePayload);
-                    messagePayload.payload = msg;
-                }
-            });
+
+        //only send a message to the selected user if he actually exists 
+        if(broadcasttargetusername in online_user_sockets) {
+            if(username != broadcasttargetusername) {
+                translateMessage(data, broadcasttargetusername, messagePayload).then( result => {
+                    if(result != null) {
+                        messagePayload.payload = result.message;
+                        online_user_sockets[broadcasttargetusername].socket.emit('new broadcast', messagePayload);
+                        messagePayload.payload = msg;
+                    }
+                });
+            }
         }
     }
 }
@@ -96,19 +105,23 @@ function sendFileBroadcast(data) {
         "mood":""
     };
 
-    online_user_sockets[data.username].socket.emit('new filebroadcast',
-        messagePayload);
+    if(username in online_user_sockets)
+        online_user_sockets[data.username].socket.emit('new filebroadcast', messagePayload);
 
     for(var i = 0; i < online_user_names.length; i++) {
         var filebroadcasttargetusername = online_user_names[i];
-        if(data.username != filebroadcasttargetusername) {
-            translateMessage(data, filebroadcasttargetusername, messagePayload).then( result => {
-                if(result != null) {
-                    messagePayload.payload = result.message;
-                    online_user_sockets[result.target].socket.emit('new filebroadcast', messagePayload);
-                    messagePayload.payload = msg;
-                }
-            });
+
+        //only send a message to the selected user if he actually exists 
+        if(filebroadcasttargetusername in online_user_sockets) {
+            if(data.username != filebroadcasttargetusername) {
+                translateMessage(data, filebroadcasttargetusername, messagePayload).then( result => {
+                    if(result != null) {
+                        messagePayload.payload = result.message;
+                        online_user_sockets[result.target].socket.emit('new filebroadcast', messagePayload);
+                        messagePayload.payload = msg;
+                    }
+                });
+            }
         }
     }
 }
@@ -128,18 +141,22 @@ function sendFileMessage(data) {
         "mood":""
     };
 
-    online_user_sockets[data.username].socket.emit('new message',
-        messagePayload);
+    if(username in online_user_sockets)
+        online_user_sockets[data.username].socket.emit('new message', messagePayload);
 
     for(var i = 0; i < data.selectedUsers.length; i++) {
         var messagetargetusername = data.selectedUsers[i];
-        translateMessage(data, messagetargetusername, messagePayload).then( result => {
-            if(result != null) {
-                messagePayload.payload = result.message;
-                online_user_sockets[result.target].socket.emit('new message', messagePayload);
-                messagePayload.payload = msg;
-            }
-        });
+
+        //only send a message to the selected user if he actually exists 
+        if(messagetargetusername in online_user_sockets) {
+            translateMessage(data, messagetargetusername, messagePayload).then( result => {
+                if(result != null) {
+                    messagePayload.payload = result.message;
+                    online_user_sockets[result.target].socket.emit('new message', messagePayload);
+                    messagePayload.payload = msg;
+                }
+            });
+        }
     }
 }
 
@@ -284,5 +301,6 @@ module.exports = {
     "sendFileBroadcast": sendFileBroadcast,
     "sendFileMessage": sendFileMessage,
     "sendServerMessage": sendServerMessage,
-    "sendAvailableLanguages": sendAvailableLanguages
+    "sendAvailableLanguages": sendAvailableLanguages,
+    "getUniqueMessageKey": getUniqueMessageKey
 };

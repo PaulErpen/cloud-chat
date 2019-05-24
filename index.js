@@ -14,9 +14,11 @@ var path = require('path');
 var router = require('./routes/router.js');
 var bodyParser = require('body-parser');
 var messages = require('./messages/messages');
+var usermanager = require('./usermanager/usermanager');
 var cors = require("cors");
 var xFrameOptions = require('x-frame-options')
 const hsts = require('hsts');
+const messagebroker = require("./messagebroker/messagebroker");
 
 //SAFETY CONFIG START
 if(node_env != 'development') {
@@ -44,7 +46,6 @@ app.use(xFrameOptions());
 app.options("*", cors());
 //SAFETY CONFIG END
 
-
 //REQUEST CONFIG START
 //Body parser for POST requests
 app.use(bodyParser.urlencoded({
@@ -65,13 +66,13 @@ app.use(function (req, res, next) {
 app.use('/', router);
 //REQUEST CONFIG END
 
-
-
 //define global variables, which will be used in other modules
 global.main_dir = __dirname;
 global.users = new Array();
 global.online_user_names = [];
 global.online_user_sockets = new Array();
+
+messagebroker.setupQueueListener();
 
 //configure the sockets for the real time chat
 io.on('connection', function(socket){
@@ -79,28 +80,11 @@ io.on('connection', function(socket){
   messages.sendAvailableLanguages();
 
   socket.on('chat login', function(data) {
-    if(!online_user_names.includes(data.username)) {
-      online_user_names.push(data.username);
-    }
-    online_user_sockets[data.username] = {"socket": socket, "username": data.username};
-
-    io.emit('user update', {"users": online_user_names});
-    messages.sendServerMessage(data.message);
+    usermanager.userLogin(data, socket);
   });
 
   socket.on('chat logout', function(data) {
-    online_user_names = online_user_names.filter(u => u != data.username);
-
-    online_user_sockets = Object.keys(online_user_sockets)
-      .filter(u => u != data.username)
-      .reduce((obj, key) => {
-        obj[key] = online_user_sockets[key];
-        return obj;
-      }, {}
-    );
-
-    io.emit('user update', {"users": online_user_names});
-    messages.sendServerMessage(data.message);
+    usermanager.userLogout(data, socket);
   });
 
   socket.on('chat broadcast', function(data){
