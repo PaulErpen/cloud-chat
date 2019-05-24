@@ -2,7 +2,7 @@ const messages = require('../messages/messages');
 const loginMessage = " entered the chatroom.";
 const logoutMessage = " exited the chatroom.";
 
-function userLogin(data) {
+function userLogin(data, socket) {
     if(!online_user_names.includes(data.username)) {
         online_user_names.push(data.username);
     }
@@ -20,7 +20,7 @@ function loginRemoteUser(username) {
     messages.sendServerMessage(username + loginMessage);
 }
 
-function userLogout(data) {
+function userLogout(data, socket) {
     online_user_names = online_user_names.filter(u => u != data.username);
 
     online_user_sockets = Object.keys(online_user_sockets)

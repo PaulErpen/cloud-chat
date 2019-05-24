@@ -80,11 +80,11 @@ io.on('connection', function(socket){
   messages.sendAvailableLanguages();
 
   socket.on('chat login', function(data) {
-    usermanager.userLogin(data);
+    usermanager.userLogin(data, socket);
   });
 
   socket.on('chat logout', function(data) {
-    usermanager.userLogout(data);
+    usermanager.userLogout(data, socket);
   });
 
   socket.on('chat broadcast', function(data){
