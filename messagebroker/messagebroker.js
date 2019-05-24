@@ -59,7 +59,7 @@ function notifyUserLogout(username) {
   }).catch(console.warn);
 }
 
-function notifyUserMessage(message) {
+function notifyUserMessage(data, action) {
   // publish message info to queue
   open.then(function(conn) {
     return conn.createChannel();
@@ -69,7 +69,8 @@ function notifyUserMessage(message) {
         JSON.stringify({
           "instanceid": instanceBrokerID,
           "type": "message",
-          "message": message
+          "action": action,
+          "data": data
         })));
     });
   }).catch(console.warn);
@@ -88,7 +89,7 @@ function handleQueueMessage(message) {
           handleUserUpdate(message);
           break;
         case "message":
-        handleMessage(message.message);
+        handleMessageData(message);
           break;
       }
     }
@@ -108,22 +109,19 @@ function handleUserUpdate(message) {
   }
 }
 
-function handleMessage(message) {
-  //set the message id something appropriate for this particular instance
-  message.messageid = messages.getUniqueMessageKey();
-
-  switch (message.type) {
+function handleMessageData(message) {
+  switch (message.action) {
     case "message":
-      messages.sendMessage(message);
+      messages.sendMessage(message.data);
       break;
     case "broadcast":
-      messages.sendBroadcast(message);
+      messages.sendBroadcast(message.data);
       break;
     case "filemessage":
-      messages.sendFileMessage(message);
+      messages.sendFileMessage(message.data);
       break;
     case "filebroadcast":
-      messages.sendFileBroadcast(message);
+      messages.sendFileBroadcast(message.data);
       break;
   }
 }

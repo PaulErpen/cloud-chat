@@ -37,13 +37,8 @@ function sendMessage(data) {
 
         //only send a message to the selected user if he actually exists 
         if(messagetargetusername in online_user_sockets) {
-            translateMessage(data, messagetargetusername, messagePayload).then( result => {
-                if(result != null) {
-                    messagePayload.payload = result.message;
-                    online_user_sockets[result.target].socket.emit('new message', messagePayload);
-                    messagePayload.payload = msg;
-                }
-            });
+            online_user_sockets[messagetargetusername].socket.emit('new message', messagePayload);
+            translateMessage(data, messagetargetusername, messagePayload);
         }
     }
 }
@@ -77,13 +72,8 @@ function sendBroadcast(data) {
         //only send a message to the selected user if he actually exists 
         if(broadcasttargetusername in online_user_sockets) {
             if(username != broadcasttargetusername) {
-                translateMessage(data, broadcasttargetusername, messagePayload).then( result => {
-                    if(result != null) {
-                        messagePayload.payload = result.message;
-                        online_user_sockets[broadcasttargetusername].socket.emit('new broadcast', messagePayload);
-                        messagePayload.payload = msg;
-                    }
-                });
+                online_user_sockets[broadcasttargetusername].socket.emit('new broadcast', messagePayload);
+                translateMessage(data, broadcasttargetusername, messagePayload);
             }
         }
     }
@@ -114,13 +104,8 @@ function sendFileBroadcast(data) {
         //only send a message to the selected user if he actually exists 
         if(filebroadcasttargetusername in online_user_sockets) {
             if(data.username != filebroadcasttargetusername) {
-                translateMessage(data, filebroadcasttargetusername, messagePayload).then( result => {
-                    if(result != null) {
-                        messagePayload.payload = result.message;
-                        online_user_sockets[result.target].socket.emit('new filebroadcast', messagePayload);
-                        messagePayload.payload = msg;
-                    }
-                });
+                online_user_sockets[filebroadcasttargetusername].socket.emit('new filebroadcast', messagePayload);                
+                translateMessage(data, filebroadcasttargetusername, messagePayload);
             }
         }
     }
@@ -149,13 +134,8 @@ function sendFileMessage(data) {
 
         //only send a message to the selected user if he actually exists 
         if(messagetargetusername in online_user_sockets) {
-            translateMessage(data, messagetargetusername, messagePayload).then( result => {
-                if(result != null) {
-                    messagePayload.payload = result.message;
-                    online_user_sockets[result.target].socket.emit('new message', messagePayload);
-                    messagePayload.payload = msg;
-                }
-            });
+            online_user_sockets[messagetargetusername].socket.emit('new message', messagePayload);
+            translateMessage(data, messagetargetusername, messagePayload);
         }
     }
 }
@@ -193,23 +173,25 @@ function getMessageMood(message, id) {
   if (toneRequest) {
     toneAnalyzer.toneChat(toneRequest, (err, response) => {
       if (err) {
-        io.emit('update message', {
-          "messageid": id,
-          "mood":"not able to determine mood"
-        });
+        updateMessage(id, "mood", "not able to determine mood");
       } else {
         var moods = "";
         for (const key in response.utterances_tone[0].tones) {
           if(key>0) {moods+=", "};
           moods += response.utterances_tone[0].tones[key].tone_name;
         }
-        io.emit('update message', {
-          "messageid": id,
-          "mood": moods
-        });
+        updateMessage(id, "mood", moods);        
       }
     });
   }
+}
+
+function updateMessage(id, type, property) {
+    io.emit('update message', {
+        "messageid": id,
+        "type": type,
+        "property": property
+      });
 }
 
 function createToneRequest (messages) {
@@ -280,6 +262,10 @@ function translateMessage(data, targetusername, messagePayload) {
         })
         .catch(err => {
             console.log('error:', err);
+        }).then(result => {
+            if(result != null) {
+                updateMessage(id, "payload", result);
+            }
         });
 }
 
