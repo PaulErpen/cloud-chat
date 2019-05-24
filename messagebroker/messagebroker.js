@@ -110,6 +110,8 @@ function handleUserUpdate(message) {
 }
 
 function handleMessageData(message) {
+  message.data.messagebroker = true; 
+
   switch (message.action) {
     case "message":
       messages.sendMessage(message.data);

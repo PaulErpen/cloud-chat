@@ -11,6 +11,7 @@ const languageTranslator = new LanguageTranslatorV3({
 var messageCounter = 0;
 var userinfo = require('../database/userinfo');
 var database = require('../database/database');
+const messagebroker = require('../messagebroker/messagebroker');
 
 function sendMessage(data) {
     var msg = data.message;
@@ -40,6 +41,12 @@ function sendMessage(data) {
             online_user_sockets[messagetargetusername].socket.emit('new message', messagePayload);
             translateMessage(data, messagetargetusername, messagePayload);
         }
+    }
+
+    //only notify the other instances if this has not been coming from our
+    //local message broker
+    if(!data.messagebroker) {
+        messagebroker.notifyUserMessage(data);
     }
 }
 

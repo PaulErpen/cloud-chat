@@ -81,10 +81,12 @@ io.on('connection', function(socket){
 
   socket.on('chat login', function(data) {
     usermanager.userLogin(data, socket);
+    messagebroker.notifyUserLogin(data.username);
   });
 
   socket.on('chat logout', function(data) {
     usermanager.userLogout(data, socket);
+    messagebroker.notifyUserLogout(data.username);
   });
 
   socket.on('chat broadcast', function(data){
