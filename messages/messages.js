@@ -11,7 +11,6 @@ const languageTranslator = new LanguageTranslatorV3({
 var messageCounter = 0;
 var userinfo = require('../database/userinfo');
 var database = require('../database/database');
-// const messagebroker = require('../messagebroker/messagebroker');
 
 function sendMessage(data) {
     var msg = data.message;
@@ -41,14 +40,6 @@ function sendMessage(data) {
             online_user_sockets[messagetargetusername].socket.emit('new message', messagePayload);
             translateMessage(data, messagetargetusername, messagePayload);
         }
-    }
-
-    //TODO only call message broker if there are selected users outside of this instance
-    //only notify the other instances if this has not been coming from our
-    //local message broker
-    if(!data.messagebroker) {
-        data.type = "message";
-        messagebroker.notifyUserMessage(data);
     }
 }
 
@@ -86,13 +77,6 @@ function sendBroadcast(data) {
             }
         }
     }
-
-    //only notify the other instances if this has not been coming from our
-    //local message broker
-    if(!data.messagebroker) {
-        data.type = "broadcast";
-        messagebroker.notifyUserMessage(data);
-    }
 }
 
 function sendFileBroadcast(data) {
@@ -125,13 +109,6 @@ function sendFileBroadcast(data) {
             }
         }
     }
-
-    //only notify the other instances if this has not been coming from our
-    //local message broker
-    if(!data.messagebroker) {
-        data.type = "filebroadcast";
-        messagebroker.notifyUserMessage(data);
-    }
 }
 
 function sendFileMessage(data) {
@@ -160,13 +137,6 @@ function sendFileMessage(data) {
             online_user_sockets[messagetargetusername].socket.emit('new message', messagePayload);
             translateMessage(data, messagetargetusername, messagePayload);
         }
-    }
-
-    //only notify the other instances if this has not been coming from our
-    //local message broker
-    if(!data.messagebroker) {
-        data.type = "filemessage";
-        messagebroker.notifyUserMessage(data);
     }
 }
 
