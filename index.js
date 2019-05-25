@@ -79,6 +79,10 @@ io.on('connection', function(socket){
 
   messages.sendAvailableLanguages();
 
+  socket.on('chat signup', function(data) {
+    debugger;
+  });
+
   socket.on('chat login', function(data) {
     usermanager.userLogin(data.username, socket).then(
       (msg) => {
