@@ -81,7 +81,7 @@ function handleQueueMessage(message) {
     message = JSON.parse(message);
 
     /**
-     * only handly messages tat arent ours
+     * only handly messages that arent ours
      */
     if(message.instanceid != instanceBrokerID) {
       switch (message.type) {
@@ -89,7 +89,7 @@ function handleQueueMessage(message) {
           handleUserUpdate(message);
           break;
         case "message":
-        handleMessageData(message);
+          handleMessageData(message);
           break;
       }
     }

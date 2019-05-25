@@ -29,7 +29,7 @@ function sendMessage(data) {
       "mood":""
     };
 
-    if(username in online_user_sockets)
+    if(data.username in online_user_sockets)
         online_user_sockets[data.username].socket.emit('new message', messagePayload);
 
     for(var i = 0; i < data.selectedUsers.length; i++) {
@@ -62,7 +62,7 @@ function sendBroadcast(data) {
         "mood":""
     };
 
-    if(username in online_user_sockets)
+    if(data.username in online_user_sockets)
         online_user_sockets[username].socket.emit('new broadcast',
         messagePayload);
 
@@ -95,7 +95,7 @@ function sendFileBroadcast(data) {
         "mood":""
     };
 
-    if(username in online_user_sockets)
+    if(data.username in online_user_sockets)
         online_user_sockets[data.username].socket.emit('new filebroadcast', messagePayload);
 
     for(var i = 0; i < online_user_names.length; i++) {
@@ -126,7 +126,7 @@ function sendFileMessage(data) {
         "mood":""
     };
 
-    if(username in online_user_sockets)
+    if(data.username in online_user_sockets)
         online_user_sockets[data.username].socket.emit('new message', messagePayload);
 
     for(var i = 0; i < data.selectedUsers.length; i++) {
@@ -264,7 +264,7 @@ function translateMessage(data, targetusername, messagePayload) {
             console.log('error:', err);
         }).then(result => {
             if(result != null) {
-                updateMessage(id, "payload", result);
+                updateMessage(messagePayload.messageid, "payload", result);
             }
         });
 }
