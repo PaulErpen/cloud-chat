@@ -11,6 +11,7 @@ const languageTranslator = new LanguageTranslatorV3({
 var messageCounter = 0;
 var userinfo = require('../database/userinfo');
 var database = require('../database/database');
+const uuidv1 = require('uuid/v1');
 
 function sendMessage(data) {
     var msg = data.message;
@@ -164,8 +165,7 @@ function getCurrentTimestamp() {
 }
 
 function getUniqueMessageKey() {
-  messageCounter++;
-  return messageCounter;
+  return uuidv1();
 }
 
 function getMessageMood(message, id) {
