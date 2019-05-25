@@ -59,7 +59,7 @@ function notifyUserLogout(username) {
   }).catch(console.warn);
 }
 
-function notifyUserMessage(message) {
+function notifyUserMessage(data, action) {
   // publish message info to queue
   open.then(function(conn) {
     return conn.createChannel();
@@ -69,7 +69,8 @@ function notifyUserMessage(message) {
         JSON.stringify({
           "instanceid": instanceBrokerID,
           "type": "message",
-          "message": message
+          "action": action,
+          "data": data
         })));
     });
   }).catch(console.warn);
@@ -80,7 +81,7 @@ function handleQueueMessage(message) {
     message = JSON.parse(message);
 
     /**
-     * only handly messages tat arent ours
+     * only handly messages that arent ours
      */
     if(message.instanceid != instanceBrokerID) {
       switch (message.type) {
@@ -88,7 +89,7 @@ function handleQueueMessage(message) {
           handleUserUpdate(message);
           break;
         case "message":
-        handleMessage(message.message);
+          handleMessageData(message);
           break;
       }
     }
@@ -100,56 +101,34 @@ function handleQueueMessage(message) {
 function handleUserUpdate(message) {
   switch (message.action) {
     case "login":
-      usermanager.loginRemoteUser(message.username);
+      usermanager.loginRemoteUser(message.username).then((msg) => {
+        messages.sendServerMessage(msg);
+      });
       break;
     case "logout":
-      usermanager.logoutRemoteUser(message.username);
+      usermanager.logoutRemoteUser(message.username).then((msg) => {
+        messages.sendServerMessage(msg);
+      });;
       break;
   }
 }
 
-function handleMessage(message) {
-  //set the message id something appropriate for this particular instance
-  message.messageid = messages.getUniqueMessageKey();
-
-  switch (message.type) {
+function handleMessageData(message) {
+  switch (message.action) {
     case "message":
-      messages.sendMessage(message);
+      messages.sendMessage(message.data);
       break;
     case "broadcast":
-      messages.sendBroadcast(message);
+      messages.sendBroadcast(message.data);
       break;
     case "filemessage":
-      messages.sendFileMessage(message);
+      messages.sendFileMessage(message.data);
       break;
     case "filebroadcast":
-      messages.sendFileBroadcast(message);
+      messages.sendFileBroadcast(message.data);
       break;
   }
 }
-
-// Publisher
-open.then(function(conn) {
-  return conn.createChannel();
-}).then(function(ch) {
-  return ch.assertQueue(q).then(function(ok) {
-    return ch.sendToQueue(q, Buffer.from('something to do'));
-  });
-}).catch(console.warn);
-
-// Consumer
-// open.then(function(conn) {
-//   return conn.createChannel();
-// }).then(function(ch) {
-//   return ch.assertQueue(q).then(function(ok) {
-//     return ch.consume(q, function(msg) {
-//       if (msg !== null) {
-//         console.log(msg.content.toString());
-//         ch.ack(msg);
-//       }
-//     });
-//   });
-// }).catch(console.warn);
 
 module.exports = {
   "setupQueueListener": setupQueueListener,
