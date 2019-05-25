@@ -6,7 +6,7 @@ require('dotenv').config({ path: '.env.'+node_env});
 var express = require('express'); 
 var app = express();
 var http = require('http').Server(app);
-global.io = require('socket.io')(http);
+global.io = require('socket.io')(http, {'transports': ['websocket']});
 var port = process.env.PORT || 3000;
 
 //import required modules
