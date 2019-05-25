@@ -101,17 +101,19 @@ function handleQueueMessage(message) {
 function handleUserUpdate(message) {
   switch (message.action) {
     case "login":
-      usermanager.loginRemoteUser(message.username);
+      usermanager.loginRemoteUser(message.username).then((msg) => {
+        messages.sendServerMessage(msg);
+      });
       break;
     case "logout":
-      usermanager.logoutRemoteUser(message.username);
+      usermanager.logoutRemoteUser(message.username).then((msg) => {
+        messages.sendServerMessage(msg);
+      });;
       break;
   }
 }
 
 function handleMessageData(message) {
-  message.data.messagebroker = true; 
-
   switch (message.action) {
     case "message":
       messages.sendMessage(message.data);

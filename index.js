@@ -80,29 +80,38 @@ io.on('connection', function(socket){
   messages.sendAvailableLanguages();
 
   socket.on('chat login', function(data) {
-    usermanager.userLogin(data, socket);
+    usermanager.userLogin(data.username, socket).then(
+      (msg) => {
+        messages.sendServerMessage(msg);
+      }
+    );
     messagebroker.notifyUserLogin(data.username);
-  });
-
-  socket.on('chat logout', function(data) {
-    usermanager.userLogout(data, socket);
-    messagebroker.notifyUserLogout(data.username);
   });
 
   socket.on('chat broadcast', function(data){
     messages.sendBroadcast(data);
+    messagebroker.notifyUserMessage(data, "broadcast");
   });
 
   socket.on('chat message', function(data){
     messages.sendMessage(data);
+    messagebroker.notifyUserMessage(data, "message");
   });
 
   socket.on('file broadcast', function(data){
     messages.sendFileBroadcast(data);
+    messagebroker.notifyUserMessage(data, "filebroadcast");
   });
 
   socket.on('file message', function(data){
     messages.sendFileMessage(data);
+    messagebroker.notifyUserMessage(data, "filemessage");
+  });
+
+  socket.on('disconnect', function() {
+    usermanager.logoutOnDisconnect(socket).then((msg) => {
+      messages.sendServerMessage(msg);
+    });
   });
 });
 
