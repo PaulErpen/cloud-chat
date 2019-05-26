@@ -19,19 +19,20 @@ var cors = require("cors");
 var xFrameOptions = require('x-frame-options')
 const hsts = require('hsts');
 const messagebroker = require("./messagebroker/messagebroker");
+
+//experimental
 const expressSession = require('express-session');
+const cookieParser = require('cookie-parser')
+
+app.use(cookieParser())
 
 app.use(
   expressSession({
-    key: 'JSESSIONID', // use a sticky session to make sockets work
-    secret: 'arbitrary-secret',
-    cookie: {
-       maxAge: 24 * 60 * 60 * 1000, // 1 day
-       secure: false
-    },
-    saveUninitialized: false,
-    resave: false
- })
+    secret: 'mysecret',
+    name: 'JSESSIONID',
+    resave: true,
+    saveUninitialized: true
+  })
 );
 
 //SAFETY CONFIG START
