@@ -21,6 +21,19 @@ const hsts = require('hsts');
 const messagebroker = require("./messagebroker/messagebroker");
 const expressSession = require('express-session');
 
+app.use(
+  expressSession({
+    key: 'JSESSIONID', // use a sticky session to make sockets work
+    secret: 'arbitrary-secret',
+    cookie: {
+       maxAge: 24 * 60 * 60 * 1000, // 1 day
+       secure: false
+    },
+    saveUninitialized: false,
+    resave: false
+ })
+);
+
 //SAFETY CONFIG START
 if(node_env != 'development') {
   //redirect all non http requests to https
