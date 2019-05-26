@@ -31,6 +31,7 @@ app.use(cookieParser());
 var session = expressSession({
   store: new RedisStore({client: redis.createClient()}),
   key: 'JSESSIONID',
+  name: 'JSESSIONID',
   secret: 'your secret here',
   resave: true,
   saveUninitialized: true,
