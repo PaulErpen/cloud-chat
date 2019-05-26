@@ -62,6 +62,10 @@ app.use(function (req, res, next) {
   next();
 });
 
+app.use(function(req,res) {
+  res.writeHead(200,{'Set-Cookie' : 'JSESSIONID=', 'Content-Type' : 'text/plain'
+});
+
 //importing our router
 app.use('/', router);
 //REQUEST CONFIG END
