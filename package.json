@@ -9,6 +9,7 @@
     "cors": "^2.8.5",
     "dotenv": "^7.0.0",
     "express": "^4.15.2",
+    "express-session": "^1.16.1",
     "hsts": "^2.2.0",
     "multer": "^1.4.1",
     "request": "^2.88.0",

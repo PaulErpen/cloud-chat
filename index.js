@@ -6,7 +6,7 @@ require('dotenv').config({ path: '.env.'+node_env});
 var express = require('express'); 
 var app = express();
 var http = require('http').Server(app);
-global.io = require('socket.io')(http, {'transports': ['websocket']});
+global.io = require('socket.io')(http, {'transports': ['websocket', 'polling']});
 var port = process.env.PORT || 3000;
 
 //import required modules
@@ -19,6 +19,7 @@ var cors = require("cors");
 var xFrameOptions = require('x-frame-options')
 const hsts = require('hsts');
 const messagebroker = require("./messagebroker/messagebroker");
+const expressSession = require('express-session');
 
 //SAFETY CONFIG START
 if(node_env != 'development') {
@@ -62,9 +63,10 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.use(function(req,res) {
-  res.writeHead(200,{'Set-Cookie' : 'JSESSIONID=', 'Content-Type' : 'text/plain'})
-});
+// app.use(function(req, res, next) {
+//   res.setHeader(200,{'Set-Cookie' : 'JSESSIONID=', 'Content-Type' : 'text/plain'});
+//   next();
+// });
 
 //importing our router
 app.use('/', router);
