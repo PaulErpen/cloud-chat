@@ -1,4 +1,4 @@
 applications:
  - name: chat-server
-   memory: 512M
-   instances: 1
+   memory: 128M
+   instances: 2

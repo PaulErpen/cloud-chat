@@ -45,17 +45,10 @@ function logoutOnDisconnect(socket) {
             resolve(userLogout(username, socket));
         }
         else {
-            resolve(userLogout("Error: "+username+ " was never logged in."));
+            if(username != undefined)
+                resolve(userLogout("Error: "+username+ " was never logged in. "+username));
         }
     });
-    
-    
-    
-    //TODO call message broker here
-    // var disconnect_logout_user = online_user_sockets.filter(online_user_socket => online_user_socket.socket.id == socket.id);
-    // online_user_names = online_user_names.filter(u => u != username);
-    // io.emit('user update', {"users": online_user_names});
-    // messages.sendServerMessage(username + logoutMessage);
 }
 
 function userLogout(username, socket) {
