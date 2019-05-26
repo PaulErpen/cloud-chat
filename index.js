@@ -22,18 +22,21 @@ const messagebroker = require("./messagebroker/messagebroker");
 
 //experimental
 const expressSession = require('express-session');
-const cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser');
+var redis = require('redis');
+const RedisStore = require('connect-redis')(expressSession);
 
-app.use(cookieParser())
+app.use(cookieParser());
 
-app.use(
-  expressSession({
-    secret: 'mysecret',
-    name: 'JSESSIONID',
-    resave: true,
-    saveUninitialized: true
-  })
-);
+var session = expressSession({
+  store: new RedisStore({client: redis.createClient()}),
+  key: 'jsessionid',
+  secret: 'your secret here',
+  resave: true,
+  saveUninitialized: true
+});
+
+app.use(session);
 
 //SAFETY CONFIG START
 if(node_env != 'development') {
