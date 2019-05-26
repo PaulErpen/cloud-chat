@@ -63,7 +63,7 @@ app.use(function (req, res, next) {
 });
 
 app.use(function(req,res) {
-  res.writeHead(200,{'Set-Cookie' : 'JSESSIONID=', 'Content-Type' : 'text/plain'
+  res.writeHead(200,{'Set-Cookie' : 'JSESSIONID=', 'Content-Type' : 'text/plain'})
 });
 
 //importing our router
