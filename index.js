@@ -20,6 +20,8 @@ var xFrameOptions = require('x-frame-options')
 const hsts = require('hsts');
 const messagebroker = require("./messagebroker/messagebroker");
 
+app.enable('trust proxy');
+
 //experimental
 const expressSession = require('express-session');
 const cookieParser = require('cookie-parser');
@@ -29,10 +31,10 @@ const RedisStore = require('connect-redis')(expressSession);
 app.use(cookieParser());
 
 var session = expressSession({
-  key: 'JSESSIONID',
-  name: 'JSESSIONID',
-  secret: 'your secret here',
+  name : 'app.sid',
+  secret: "1234567890QWERTY",
   resave: true,
+  store: new expressSession.MemoryStore(),
   saveUninitialized: true,
   cookie: {
     httpOnly: false
@@ -58,8 +60,6 @@ if(node_env != 'development') {
     maxAge: 15768000  // 6 months in seconds
   }));
 }
-
-app.enable('trust proxy');
 
 //configure x-frame header
 app.use(xFrameOptions());
