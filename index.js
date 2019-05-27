@@ -29,7 +29,6 @@ const RedisStore = require('connect-redis')(expressSession);
 app.use(cookieParser());
 
 var session = expressSession({
-  store: new RedisStore({client: redis.createClient()}),
   key: 'JSESSIONID',
   name: 'JSESSIONID',
   secret: 'your secret here',
@@ -100,6 +99,14 @@ global.online_user_names = [];
 global.online_user_sockets = new Array();
 
 messagebroker.setupQueueListener();
+
+
+//EXPERIMENTAL
+var socketIOExpressSession = require('socket.io-express-session'); 
+io.use(socketIOExpressSession(session)); // session support
+
+// var SessionSockets = require('session.socket.io');
+// var sessionSockets = new SessionSockets(io, RedisStore, cookieParser, 'jsessionid');
 
 //configure the sockets for the real time chat
 io.on('connection', function(socket){
