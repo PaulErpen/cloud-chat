@@ -36,7 +36,7 @@ if(node_env != 'development') {
     port: 50000,
     username: 'vxc32889',
     password: 'lf4t3w-546qv5d11',
-    database: 'VXC32889'
+    database: 'BLUDB'
   };
   
   var sessionStore = new Db2Store(options);
