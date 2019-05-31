@@ -9,6 +9,8 @@ var http = require('http').Server(app);
 global.io = require('socket.io')(http, {'transports': ['websocket', 'polling']});
 var port = process.env.PORT || 3000;
 
+console.log(port);
+
 //import required modules
 var path = require('path');
 var router = require('./routes/router.js');
@@ -25,19 +27,17 @@ app.enable('trust proxy');
 //experimental
 const expressSession = require('express-session');
 const cookieParser = require('cookie-parser');
-var redis = require('redis');
-const RedisStore = require('connect-redis')(expressSession);
 
 app.use(cookieParser());
 
 var session = expressSession({
-  name : 'app.sid',
+  name : 'JSESSIONID',
   secret: "1234567890QWERTY",
-  resave: true,
-  store: new expressSession.MemoryStore(),
-  saveUninitialized: true,
-  cookie: {
-    httpOnly: false
+  resave: tYou should generally use the buildpack that's provided by your operator. If yo
+  store: neYou should generally use the buildpack that's provided by your operator. If yo
+  saveUniniYou should generally use the buildpack that's provided by your operator. If yo
+  cookie: {You should generally use the buildpack that's provided by your operator. If yo
+    httpOnly: false //set to false in order to check existance on the client side
   }
 });
 
