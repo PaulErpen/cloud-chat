@@ -9,7 +9,7 @@ var http = require('http').Server(app);
 global.io = require('socket.io')(http, {'transports': ['websocket', 'polling']});
 var port = process.env.PORT || 3000;
 
-console.log(port);
+console.log("this is my port "+port);
 
 //import required modules
 var path = require('path');
