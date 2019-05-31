@@ -27,17 +27,23 @@ app.enable('trust proxy');
 //experimental
 const expressSession = require('express-session');
 const cookieParser = require('cookie-parser');
-var Db2Store = require('connect-db2')(expressSession);
 
-var options = {
-  host: 'dashdb-txn-sbox-yp-lon02-02.services.eu-gb.bluemix.net',
-  port: 50000,
-  username: 'vxc32889',
-  password: 'lf4t3w-546qv5d11',
-  database: 'VXC32889'
-};
+if(node_env != 'development') {
+  var Db2Store = require('connect-db2')(expressSession);
 
-var sessionStore = new Db2Store(options);
+  var options = {
+    host: 'dashdb-txn-sbox-yp-lon02-02.services.eu-gb.bluemix.net',
+    port: 50000,
+    username: 'vxc32889',
+    password: 'lf4t3w-546qv5d11',
+    database: 'VXC32889'
+  };
+  
+  var sessionStore = new Db2Store(options);
+} else {
+  var sessionStore = new expressSession.MemoryStore();  
+}
+
 
 app.use(cookieParser());
 
