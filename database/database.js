@@ -13,7 +13,7 @@ function getToken() {
         },
         body: {
             "userid":"vxc32889", 
-            "password":"lf4t3w-546qv5d11"
+            "password":"Hellohello<3"
         },
         json: true
     };
