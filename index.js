@@ -30,16 +30,7 @@ const cookieParser = require('cookie-parser');
 
 var Db2Store = require('connect-db2')(expressSession);
 
-var options = {
-  host: 'dashdb-txn-sbox-yp-lon02-02.services.eu-gb.bluemix.net',
-  port: 50000,
-  username: 'vxc32889',
-  password: 'Hellohello<3',
-  database: 'BLUDB',
-  use_ssl: true
-};
-
-var sessionStore = new Db2Store(options);
+var sessionStore = new Db2Store({dsn: "DATABASE=BLUDB;HOSTNAME=dashdb-txn-sbox-yp-lon02-02.services.eu-gb.bluemix.net;PORT=50001;PROTOCOL=TCPIP;UID=vxc32889;PWD=Hellohello<3;Security=SSL;"});
 
 
 app.use(cookieParser());
