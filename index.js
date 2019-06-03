@@ -9,8 +9,6 @@ var http = require('http').Server(app);
 global.io = require('socket.io')(http); //, {'transports': ['websocket', 'polling']}
 var port = process.env.PORT || 3000;
 
-console.log("this is my port "+port);
-
 //import required modules
 var path = require('path');
 var router = require('./routes/router.js');
@@ -25,28 +23,28 @@ const messagebroker = require("./messagebroker/messagebroker");
 app.enable('trust proxy');
 
 //experimental
-const expressSession = require('express-session');
-const cookieParser = require('cookie-parser');
+// const expressSession = require('express-session');
+// const cookieParser = require('cookie-parser');
 
-var Db2Store = require('connect-db2')(expressSession);
+// var Db2Store = require('connect-db2')(expressSession);
 
-var sessionStore = new Db2Store({dsn: "DATABASE=BLUDB;HOSTNAME=dashdb-txn-sbox-yp-lon02-02.services.eu-gb.bluemix.net;PORT=50001;PROTOCOL=TCPIP;UID=vxc32889;PWD=Hellohello<3;Security=SSL;"});
+// var sessionStore = new Db2Store({dsn: "DATABASE=BLUDB;HOSTNAME=dashdb-txn-sbox-yp-lon02-02.services.eu-gb.bluemix.net;PORT=50001;PROTOCOL=TCPIP;UID=vxc32889;PWD=Hellohello<3;Security=SSL;"});
 
 
-app.use(cookieParser());
+// app.use(cookieParser());
 
-var session = expressSession({
-  name : 'JSESSIONID',
-  secret: "1234567890QWERTY",
-  resave: true,
-  store: sessionStore,
-  saveUninitialized: true,
-  cookie: {
-    httpOnly: false //set to false in order to check existance on the client side
-  }
-});
+// var session = expressSession({
+//   name : 'JSESSIONID',
+//   secret: "1234567890QWERTY",
+//   resave: true,
+//   store: sessionStore,
+//   saveUninitialized: true,
+//   cookie: {
+//     httpOnly: false //set to false in order to check existance on the client side
+//   }
+// });
 
-app.use(session);
+// app.use(session);
 
 //SAFETY CONFIG START
 if(node_env != 'development') {
@@ -107,8 +105,8 @@ messagebroker.setupQueueListener();
 
 
 //EXPERIMENTAL
-var socketIOExpressSession = require('socket.io-express-session'); 
-io.use(socketIOExpressSession(session)); // session support
+// var socketIOExpressSession = require('socket.io-express-session'); 
+// io.use(socketIOExpressSession(session)); // session support
 
 // var SessionSockets = require('session.socket.io');
 // var sessionSockets = new SessionSockets(io, RedisStore, cookieParser, 'jsessionid');

@@ -8,7 +8,6 @@ const languageTranslator = new LanguageTranslatorV3({
     iam_apikey: 'WxFRwTlgJTAd5l1PQA2MoxGn2xV4jtJHTqMZ1SYd9Nxi',
     url: 'https://gateway-fra.watsonplatform.net/language-translator/api'
 });
-var messageCounter = 0;
 var userinfo = require('../database/userinfo');
 var database = require('../database/database');
 const uuidv1 = require('uuid/v1');
