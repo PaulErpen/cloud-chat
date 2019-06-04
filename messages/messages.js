@@ -269,15 +269,12 @@ function translateMessage(data, targetusername, messagePayload) {
 }
 
 function sendAvailableLanguages() {
-    var availableLanguages;
-    languageTranslator.listIdentifiableLanguages()
-        .then(identifiedLanguages => {
-            availableLanguages = identifiedLanguages;
-            io.emit('available languages', availableLanguages);
-        })
-        .catch(err => {
-            console.log('error:', err);
-        });
+    var availableLanguages =
+        { languages: [
+            { language: 'de', name: 'German' },
+            { language: 'en', name: 'English' }
+        ]};
+    io.emit('available languages', availableLanguages);
 }
 
 module.exports = {
