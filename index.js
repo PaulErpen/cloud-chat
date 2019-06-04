@@ -6,7 +6,7 @@ require('dotenv').config({ path: '.env.'+node_env});
 var express = require('express'); 
 var app = express();
 var http = require('http').Server(app);
-global.io = require('socket.io')(http); //, {'transports': ['websocket', 'polling']}
+global.io = require('socket.io')(http);
 var port = process.env.PORT || 3000;
 
 //import required modules
@@ -21,30 +21,6 @@ const hsts = require('hsts');
 const messagebroker = require("./messagebroker/messagebroker");
 
 app.enable('trust proxy');
-
-//experimental
-// const expressSession = require('express-session');
-// const cookieParser = require('cookie-parser');
-
-// var Db2Store = require('connect-db2')(expressSession);
-
-// var sessionStore = new Db2Store({dsn: "DATABASE=BLUDB;HOSTNAME=dashdb-txn-sbox-yp-lon02-02.services.eu-gb.bluemix.net;PORT=50001;PROTOCOL=TCPIP;UID=vxc32889;PWD=Hellohello<3;Security=SSL;"});
-
-
-// app.use(cookieParser());
-
-// var session = expressSession({
-//   name : 'JSESSIONID',
-//   secret: "1234567890QWERTY",
-//   resave: true,
-//   store: sessionStore,
-//   saveUninitialized: true,
-//   cookie: {
-//     httpOnly: false //set to false in order to check existance on the client side
-//   }
-// });
-
-// app.use(session);
 
 //SAFETY CONFIG START
 if(node_env != 'development') {
@@ -86,11 +62,6 @@ app.use(function (req, res, next) {
   next();
 });
 
-// app.use(function(req, res, next) {
-//   res.setHeader(200,{'Set-Cookie' : 'JSESSIONID=', 'Content-Type' : 'text/plain'});
-//   next();
-// });
-
 //importing our router
 app.use('/', router);
 //REQUEST CONFIG END
@@ -102,14 +73,6 @@ global.online_user_names = [];
 global.online_user_sockets = new Array();
 
 messagebroker.setupQueueListener();
-
-
-//EXPERIMENTAL
-// var socketIOExpressSession = require('socket.io-express-session'); 
-// io.use(socketIOExpressSession(session)); // session support
-
-// var SessionSockets = require('session.socket.io');
-// var sessionSockets = new SessionSockets(io, RedisStore, cookieParser, 'jsessionid');
 
 //configure the sockets for the real time chat
 io.on('connection', function(socket){
