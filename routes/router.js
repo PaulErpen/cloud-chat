@@ -68,10 +68,14 @@ router.post('/userimage', function(req, res){
 function handleLogin(username, password, res) {
   auth.login(username).then(
     function(result) {
-      var hashedPassword = database.cleanString(result[0].rows[0][0]);
-      bcrypt.compare(password, hashedPassword).then((result) => {
-          res.send({"result": result});
-      });
+      if(result.length == 0 || result[0].rows.length == 0 || result[0].rows[0].length == 0) {
+        res.send({"result": false});
+      }else {
+        var hashedPassword = database.cleanString(result[0].rows[0][0]);
+        bcrypt.compare(password, hashedPassword).then((result) => {
+            res.send({"result": result});
+        });
+      }
     }
   );
 }
