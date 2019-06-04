@@ -193,6 +193,14 @@ function updateMessage(id, type, property) {
       });
 }
 
+function updateMessageForUser(user, id, type, property) {
+    online_user_sockets[user].socket.emit('update message', {
+        "messageid": id,
+        "type": type,
+        "property": property
+      });
+}
+
 function createToneRequest (messages) {
   let toneChatRequest;
 
@@ -242,7 +250,7 @@ function translateMessage(data, targetusername, messagePayload) {
                                     return languageTranslator.translate(translateParams)
                                         .then(translationResult => {
                                             newmessage = translationResult.translations[0].translation;
-                                            return {"target": targetusername, "message": newmessage};
+                                            return newmessage;
                                         })
                                         .catch(err => {
                                             console.log('error:', err);
@@ -263,7 +271,7 @@ function translateMessage(data, targetusername, messagePayload) {
             console.log('error:', err);
         }).then(result => {
             if(result != null) {
-                updateMessage(messagePayload.messageid, "payload", result);
+                updateMessageForUser(targetusername, messagePayload.messageid, "payload", result);
             }
         });
 }
